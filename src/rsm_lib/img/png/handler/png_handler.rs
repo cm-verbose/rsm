@@ -1,31 +1,27 @@
-use crate::rsm_lib::img::png::{chunk::png_chunk::Chunk, image::png_image::PNGImage};
-use std::borrow::Cow;
+use std::{fs, path::Path};
 
-/// Handles manipulating `.png` data streams provided from either files or a
-/// raw sequence of bytes.
-pub struct PNGHandler<'b> {
-  pub bytes: Cow<'b, [u8]>,
-  pub chunks: Vec<Chunk>,
-  pub idat_bytes: Vec<u8>,
-  pub image: PNGImage,
-  pub ptr: usize,
-}
+use crate::rsm_lib::img::png::{image::png_image::PNGImage, reader::png_reader::PNGReader};
 
-impl<'b> Default for PNGHandler<'b> {
-  fn default() -> Self {
-    Self {
-      bytes: Cow::Borrowed(&[]),
-      chunks: Vec::new(),
-      idat_bytes: Vec::new(),
-      image: PNGImage::default(),
-      ptr: 0,
+/// Handle PNG files
+pub struct PNGHandler;
+
+impl PNGHandler {
+  pub fn new() -> Self {
+    Self
+  }
+
+  /// Read a PNG image from a file
+  pub fn read_file(&mut self, path: &Path) -> Result<PNGImage, String> {
+    match fs::read(path) {
+      Ok(bytes) => Ok(self.read_bytes(&bytes)?),
+      Err(_) => Err(format!("")),
     }
   }
-}
 
-impl<'b> PNGHandler<'b> {
-  /// Creates a new PNG image handler
-  pub fn new() -> Self {
-    Self::default()
+  /// Read a PNG image from a sequence of bytes
+  pub fn read_bytes(&mut self, bytes: &[u8]) -> Result<PNGImage, String> {
+    let mut reader: PNGReader<'_> = PNGReader::new();
+    let image = reader.read_bytes(bytes)?;
+    Ok(image)
   }
 }
