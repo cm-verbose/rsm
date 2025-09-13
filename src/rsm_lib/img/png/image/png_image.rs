@@ -26,5 +26,5 @@ define_png_image! (
   compression_method: u8,
   filter_method: u8,
   interlace_method: u8,
-  pixels: Vec<Vec<Box<dyn Color>>>
+  pixels: Vec<Box<dyn Color>>
 );

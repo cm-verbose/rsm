@@ -1,4 +1,8 @@
-use crate::{impl_color_conversions, rsm_lib::color::{color::Color, colors::rgb::RGB}};
+#![allow(unused)]
+use crate::{
+  impl_color_conversions,
+  rsm_lib::color::{color::Color, colors::rgb::RGB},
+};
 
 /// RGB color represented as a struct
 #[derive(Clone, Copy, Debug)]
