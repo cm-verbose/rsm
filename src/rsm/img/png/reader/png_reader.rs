@@ -1,12 +1,14 @@
-use crate::rsm_lib::img::png::image::png_image::PNGImage;
+use crate::rsm::img::png::image::png_image::PNGImage;
+use std::ptr;
 
-/// Handles reading PNG datastreams
+/// Handles reading PNG images
 pub(in super::super) struct PNGReader<'a> {
   pub bytes: &'a [u8],
   pub idat_bytes: Vec<u8>,
-  pub is_used: bool,
   pub image: PNGImage,
-  pub ptr: usize,
+  pub ptr: *const u8,
+  pub ptr_end: *const u8,
+  pub used: bool,
 }
 
 impl<'a> Default for PNGReader<'a> {
@@ -14,16 +16,16 @@ impl<'a> Default for PNGReader<'a> {
     Self {
       bytes: &[],
       idat_bytes: Vec::new(),
-      is_used: false,
       image: PNGImage::default(),
-      ptr: 0,
+      ptr: ptr::null(),
+      ptr_end: ptr::null(),
+      used: false,
     }
   }
 }
 
 impl<'a> PNGReader<'a> {
-  /// Creates a new instance of a reader
-  pub(in super::super) fn new() -> Self {
+  pub fn new() -> Self {
     Self::default()
   }
 }
