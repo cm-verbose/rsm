@@ -1,7 +1,7 @@
 #![allow(unused)]
 use crate::{
   impl_color_conversions,
-  rsm_lib::color::{color::Color, colors::rgb::RGB},
+  rsm::color::{color::Color, colors::rgb::RGB},
 };
 
 /// RGB color represented as a struct
@@ -29,6 +29,6 @@ impl_color_conversions!(
 #[macro_export]
 macro_rules! rgba {
   ($r: expr, $g: expr, $b: expr, $a: expr) => {
-    $crate::rsm_lib::color::colors::rgba::RGBA::new($r, $g, $b, $a)
+    $crate::rsm::color::colors::rgba::RGBA::new($r, $g, $b, $a)
   };
 }

@@ -1,9 +1,9 @@
-use crate::rsm_lib::img::png::{
+use crate::rsm::img::png::{
   chunk::chunk::Chunk, image::png_image::PNGImage, reader::png_reader::PNGReader,
 };
 
 impl<'a> PNGReader<'a> {
-  /// Handle the IDHR chunk
+  /// Handle the IDHR (Image header) chunk
   pub(in super::super) fn handle_ihdr(&mut self, chunk: &Chunk<'a>) -> Result<(), String> {
     let data: [u8; 13] = chunk.data.try_into().unwrap();
     let width: u32 = self.get_ihdr_size(&data[0..4])?;
