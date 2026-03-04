@@ -5,6 +5,7 @@ pub mod lib {
     pub mod png {
       pub mod chunk {
         pub mod png_chunk;
+        pub mod png_chunk_type;
       }
 
       pub mod img {

@@ -1,9 +1,10 @@
+/// Struct used for reading PNG content
 #[derive(Default)]
-pub struct PNGReader<'a> {
-  pub(super) bytes: &'a [u8],
+pub struct PNGReader<'r> {
+  pub(super) bytes: &'r [u8],
 }
 
-impl<'a> PNGReader<'a> {
+impl<'r> PNGReader<'r> {
   pub fn new() -> Self {
     PNGReader::default()
   }

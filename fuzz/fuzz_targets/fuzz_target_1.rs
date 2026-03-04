@@ -4,5 +4,5 @@ use libfuzzer_sys::fuzz_target;
 
 fuzz_target!(|data: &[u8]| {
   let image = PNGImage::new();
-  image.read_bytes(data);
+  let _ = image.read_bytes(data);
 });

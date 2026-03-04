@@ -1,11 +1,11 @@
 use crate::lib::{img::png::read::reader::png_reader::PNGReader, util::rsm_error::RSMError};
 
-impl<'a> PNGReader<'a> {
+impl<'r> PNGReader<'r> {
   /// PNG image signature
   const SIGNATURE: [u8; 8] = [0x89, 0x50, 0x4e, 0x47, 0xd, 0xa, 0x1a, 0xa];
 
   /// Validate the PNG image's signature
-  pub(super) fn validate_signature(&self, bytes: &'a [u8]) -> Result<(), RSMError> {
+  pub(super) fn validate_signature(&self, bytes: &'r [u8]) -> Result<(), RSMError> {
     if bytes.len() < 8 {
       return Err(RSMError::NotEnoughContent);
     }

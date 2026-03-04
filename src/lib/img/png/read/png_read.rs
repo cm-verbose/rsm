@@ -5,7 +5,7 @@ use crate::lib::{
 use memmap2::Mmap;
 use std::{fs::File, io::Read, path::Path};
 
-impl PNGImage {
+impl<'i> PNGImage<'i> {
   /// Read a file from a given path
   pub fn read(&self, path: &Path) -> Result<(), RSMError> {
     let mut file: File = File::open(path)?;
