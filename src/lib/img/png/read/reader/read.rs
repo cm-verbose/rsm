@@ -37,6 +37,8 @@ impl<'r> PNGReader<'r> {
       crc: self.read_chunk_crc()?,
     };
 
+    let type_bytes: &[u8; 4] = &chunk.r#type.as_bytes();
+    self.validate_crc(type_bytes, chunk.data, chunk.crc)?;
     Ok(chunk)
   }
 

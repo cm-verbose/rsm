@@ -1,3 +1,5 @@
+use crc32fast::Hasher;
+
 use crate::lib::{img::png::read::reader::png_reader::PNGReader, util::err::rsm_error::RSMError};
 
 impl<'r> PNGReader<'r> {
@@ -13,6 +15,27 @@ impl<'r> PNGReader<'r> {
       Ok(())
     } else {
       Err(RSMError::InvalidSignature)
+    }
+  }
+
+  /// Validate CRC (Cyclic redundancy check)
+  pub(super) fn validate_crc(
+    &self,
+    type_bytes: &[u8; 4],
+    data: &[u8],
+    crc: [u8; 4],
+  ) -> Result<(), RSMError> {
+    let expected = u32::from_be_bytes(crc);
+
+    let mut hasher = Hasher::new();
+    hasher.update(type_bytes);
+    hasher.update(data);
+    let computed: u32 = hasher.finalize();
+
+    if expected != computed {
+      Err(RSMError::InvalidCRC)
+    } else {
+      Ok(())
     }
   }
 }

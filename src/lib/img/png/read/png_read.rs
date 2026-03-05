@@ -6,6 +6,7 @@ use crate::lib::{
 };
 
 impl<'i> PNGImage<'i> {
+  /// Read data from a file
   pub fn read(&mut self, data: &'i FileData) -> Result<(), RSMError> {
     self.read_bytes(data.as_bytes())
   }

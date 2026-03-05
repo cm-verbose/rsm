@@ -9,9 +9,11 @@ macro_rules! test_image {
 
       let mut image = PNGImage::new();
       let path = concat!("./tests/png/png-suite/", $file_name);
-      
+
       assert_eq!(
-        image.read(&FileData::new(Path::new(path)).expect("error")).is_ok(),
+        image
+          .read(&FileData::new(Path::new(path)).expect("error"))
+          .is_ok(),
         $expected
       )
     }

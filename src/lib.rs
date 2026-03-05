@@ -29,6 +29,7 @@ pub mod lib {
       pub mod file_data;
     }
 
+    /// Error handling utilities
     pub mod err {
       pub mod rsm_error;
     }

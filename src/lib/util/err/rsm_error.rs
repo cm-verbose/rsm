@@ -5,6 +5,7 @@ use std::{error::Error, fmt::Display};
 pub enum RSMError {
   Empty,
   InvalidContent,
+  InvalidCRC,
   InvalidLength,
   InvalidSignature,
   NotEnoughContent,
@@ -16,6 +17,7 @@ impl Display for RSMError {
     match self {
       Self::Empty => write!(f, "No content provided"),
       Self::InvalidContent => write!(f, "Invalid content passed"),
+      Self::InvalidCRC => write!(f, "Invalid CRC for data"),
       Self::InvalidLength => write!(f, "Invalid length read"),
       Self::InvalidSignature => write!(f, "Invalid image signature"),
       Self::NotEnoughContent => write!(f, "Expected more content"),
@@ -40,9 +42,10 @@ pub mod tests {
 
   #[test]
   fn test_existing_error_types() {
-    let error_types: [RSMError; 5] = [
+    let error_types: [RSMError; 6] = [
       RSMError::Empty,
       RSMError::InvalidContent,
+      RSMError::InvalidCRC,
       RSMError::InvalidLength,
       RSMError::InvalidSignature,
       RSMError::NotEnoughContent,
