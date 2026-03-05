@@ -1,6 +1,5 @@
-use crc32fast::Hasher;
-
 use crate::lib::{img::png::read::reader::png_reader::PNGReader, util::err::rsm_error::RSMError};
+use crc32fast::Hasher;
 
 impl<'r> PNGReader<'r> {
   /// PNG image signature
