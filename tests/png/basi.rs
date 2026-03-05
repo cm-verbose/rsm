@@ -3,7 +3,7 @@ use std::path::Path;
 
 #[test]
 fn test_basi() {
-  let image: PNGImage = PNGImage::new();
+  let mut image: PNGImage = PNGImage::new();
 
   assert!(
     image

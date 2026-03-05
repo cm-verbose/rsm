@@ -3,7 +3,7 @@ use crate::lib::img::png::chunk::png_chunk::Chunk;
 /// Represents a PNG image
 #[derive(Default)]
 pub struct PNGImage<'i> {
-  chunks: Vec<Chunk<'i>>,
+  pub(in super::super) chunks: Vec<Chunk<'i>>,
 }
 
 impl<'i> PNGImage<'i> {
