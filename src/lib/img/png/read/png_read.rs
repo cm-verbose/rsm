@@ -19,8 +19,6 @@ impl<'i> PNGImage<'i> {
     let mut reader: PNGReader<'i> = PNGReader::new();
     let chunks: Vec<Chunk<'i>> = reader.read(bytes)?;
     self.chunks = chunks;
-
-    println!("{:?}", self.chunks);
     Ok(())
   }
 }
@@ -31,8 +29,15 @@ mod tests {
 
   /// Tests reading raw bytes
   #[test]
-  fn read_bytes() {
+  fn read_empty_bytes() {
     let mut image: PNGImage = PNGImage::new();
     assert!(image.read_bytes(&[]).is_err())
+  }
+
+  /// Tests reading invalid bytes
+  #[test]
+  fn read_invalid_bytes() {
+    let mut image: PNGImage = PNGImage::new();
+    assert!(image.read_bytes(&[4, 21, 2]).is_err())
   }
 }
