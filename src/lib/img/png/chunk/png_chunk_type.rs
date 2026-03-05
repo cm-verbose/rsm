@@ -8,7 +8,7 @@ macro_rules! define_chunk_types {
 
     /// A PNG chunk type
     #[allow(non_camel_case_types)]
-    #[derive(Debug, PartialEq)]
+    #[derive(Debug, PartialEq, Copy, Clone)]
     pub enum ChunkType {
       $($variant,)+
       Private(u32)

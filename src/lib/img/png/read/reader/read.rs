@@ -3,30 +3,33 @@ use crate::lib::{
     chunk::{png_chunk::Chunk, png_chunk_type::ChunkType},
     read::reader::png_reader::PNGReader,
   },
-  util::rsm_error::RSMError,
+  util::err::rsm_error::RSMError,
 };
 
 impl<'r> PNGReader<'r> {
   /// Read a sequence of bytes as a PNG image
   pub fn read(&mut self, bytes: &'r [u8]) -> Result<Vec<Chunk<'r>>, RSMError> {
     self.load_bytes(bytes)?;
-    let chunks: Vec<Chunk<'_>> = self.read_chunks();
+    let chunks: Vec<Chunk<'_>> = self.read_chunks()?;
     Ok(chunks)
   }
 
   /// Read the image chunk by chunk
-  pub fn read_chunks(&mut self) -> Vec<Chunk<'r>> {
-    let mut chunks: Vec<Chunk<'_>> = Vec::new();
-    while let Ok(chunk) = self.read_chunk() {
+  pub fn read_chunks(&mut self) -> Result<Vec<Chunk<'r>>, RSMError> {
+    let mut chunks: Vec<Chunk<'r>> = Vec::new();
+    loop {
+      let chunk: Chunk<'r> = self.read_chunk()?;
+      if chunk.r#type == ChunkType::IEND {
+        break;
+      }
       chunks.push(chunk);
     }
-    chunks
+    Ok(chunks)
   }
 
   /// Read a singular chunk
   pub fn read_chunk(&mut self) -> Result<Chunk<'r>, RSMError> {
     let length: u32 = self.read_chunk_length()?;
-
     let chunk: Chunk<'r> = Chunk {
       length,
       r#type: self.read_chunk_type()?,

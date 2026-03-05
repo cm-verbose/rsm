@@ -1,4 +1,4 @@
-use crate::lib::{img::png::read::reader::png_reader::PNGReader, util::rsm_error::RSMError};
+use crate::lib::{img::png::read::reader::png_reader::PNGReader, util::err::rsm_error::RSMError};
 
 impl<'r> PNGReader<'r> {
   /// PNG image signature

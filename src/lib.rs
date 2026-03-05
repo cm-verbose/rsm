@@ -25,6 +25,12 @@ pub mod lib {
 
   /// Utility modules
   pub mod util {
-    pub mod rsm_error;
+    pub mod data {
+      pub mod file_data;
+    }
+
+    pub mod err {
+      pub mod rsm_error;
+    }
   }
 }
