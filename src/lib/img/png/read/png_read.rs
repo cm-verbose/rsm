@@ -1,6 +1,7 @@
 use crate::lib::{
   img::png::{
-    chunk::png_chunk::Chunk, img::png_image::PNGImage, read::reader::png_reader::PNGReader,
+    chunk::png_chunk::Chunk, img::png_image::PNGImage, parse::png_parser::PNGParser,
+    read::reader::png_reader::PNGReader,
   },
   util::{data::file_data::FileData, err::rsm_error::RSMError},
 };
@@ -20,6 +21,9 @@ impl<'i> PNGImage<'i> {
     let mut reader: PNGReader<'i> = PNGReader::new();
     let chunks: Vec<Chunk<'i>> = reader.read(bytes)?;
     self.chunks = chunks;
+
+    let mut parser: PNGParser = PNGParser::new();
+    parser.parse(&self.chunks)?;
     Ok(())
   }
 }

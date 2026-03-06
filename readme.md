@@ -6,5 +6,5 @@
 
 - Run tests with `cargo test`
 - Run mutation testing with `cargo mutants`
-- Run fuzzing with `cargo +nightly run fuzz <fuzz_target>`
+- Run fuzzing with `cargo +nightly fuzz run <fuzz_target>`
 - Inspect coverage with `cargo llvm-cov`

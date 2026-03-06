@@ -12,6 +12,27 @@ pub mod lib {
         pub mod png_image;
       }
 
+      /// Parsing functions
+      pub mod parse {
+        /// Parsing specific chunks
+        pub mod chunks {
+          // IHDR - Image header
+          pub mod ihdr {
+            pub mod handle_ihdr;
+            pub mod png_bit_depth;
+            pub mod png_color_type;
+            pub mod png_compression_method;
+            pub mod png_filter_method;
+            pub mod png_header;
+            pub mod png_interlace_method;
+          }
+          // gAMA - Image gamma
+          pub mod handle_gama;
+        }
+        pub mod png_parser;
+      }
+
+      /// Reading functions
       pub mod read {
         pub mod reader {
           pub mod png_reader;
