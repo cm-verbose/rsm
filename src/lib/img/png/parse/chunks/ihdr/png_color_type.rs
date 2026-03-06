@@ -1,7 +1,7 @@
 use crate::lib::util::err::rsm_error::RSMError;
 
 /// Color type used to render the image
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum ColorType {
   Greyscale = 0,
   Truecolor = 2,
@@ -22,5 +22,28 @@ impl TryFrom<u8> for ColorType {
       5 => Ok(Self::TruecolorAlpha),
       _ => Err(RSMError::InvalidContent),
     }
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use crate::lib::img::png::parse::chunks::ihdr::png_color_type::ColorType;
+
+  #[test]
+  fn test_color_tupe_mapping() {
+    let greyscale: ColorType = 0.try_into().unwrap();
+    assert_eq!(greyscale, ColorType::Greyscale);
+
+    let truecolor: ColorType = 2.try_into().unwrap();
+    assert_eq!(truecolor, ColorType::Truecolor);
+
+    let indexed_color: ColorType = 3.try_into().unwrap();
+    assert_eq!(indexed_color, ColorType::IndexedColor);
+
+    let greyscale_alpha: ColorType = 4.try_into().unwrap();
+    assert_eq!(greyscale_alpha, ColorType::GreyscaleAlpha);
+
+    let truecolor_alpha: ColorType = 5.try_into().unwrap();
+    assert_eq!(truecolor_alpha, ColorType::TruecolorAlpha);
   }
 }

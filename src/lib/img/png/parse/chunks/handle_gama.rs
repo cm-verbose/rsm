@@ -19,3 +19,52 @@ impl PNGParser {
     }
   }
 }
+
+#[cfg(test)]
+mod tests {
+  use crate::lib::img::png::{
+    chunk::{png_chunk::Chunk, png_chunk_type::ChunkType},
+    parse::png_parser::PNGParser,
+  };
+
+  /// Test handling an array with an incorrect length
+  #[test]
+  fn test_invalid_gamma_length() {
+    let mut parser = PNGParser::new();
+    let gama_result = parser.handle_gama(&Chunk {
+      r#type: ChunkType::gAMA,
+      length: 3,
+      data: &[2, 3, 1],
+      crc: [0, 0, 0, 0],
+    });
+    assert!(gama_result.is_err())
+  }
+
+  /// Test handling the value 0
+  #[test]
+  fn test_null_gamma_value() {
+    let mut parser = PNGParser::new();
+    let gama_result = parser.handle_gama(&Chunk {
+      r#type: ChunkType::gAMA,
+      length: 4,
+      data: &[0, 0, 0, 0],
+      crc: [0, 0, 0, 0],
+    });
+
+    assert!(gama_result.is_err())
+  }
+
+  /// Test handling values superior to the max value
+  #[test]
+  fn test_superior_gamma_values() {
+    let mut parser = PNGParser::new();
+    let gama_result = parser.handle_gama(&Chunk {
+      r#type: ChunkType::gAMA,
+      length: 4,
+      data: &[0xFF, 0xFF, 0xFF, 0xFF],
+      crc: [0, 0, 0, 0],
+    });
+
+    assert!(gama_result.is_err())
+  }
+}

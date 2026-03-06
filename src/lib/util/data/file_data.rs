@@ -15,7 +15,7 @@ impl FileData {
     let file_sz: usize = file.metadata()?.len() as usize;
     let pg_sz: usize = page_size::get();
 
-    if pg_sz * 4 < file_sz {
+    if file_sz < pg_sz * 4 {
       let mut buffer: Vec<u8> = Vec::with_capacity(file_sz);
       file.read_to_end(&mut buffer)?;
       Ok(FileData::Native(buffer))
