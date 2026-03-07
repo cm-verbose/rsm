@@ -1,7 +1,10 @@
 use crate::lib::{
   img::png::{
     chunk::{png_chunk::Chunk, png_chunk_type::ChunkType},
-    parse::chunks::ihdr::png_header::PNGHeader,
+    parse::chunks::{
+      ihdr::png_header::PNGHeader, phys::png_physical_dimensions::PhysicalDimensions,
+      srgb::png_rendering_intent::RenderingIntent,
+    },
   },
   util::err::rsm_error::RSMError,
 };
@@ -10,6 +13,12 @@ use crate::lib::{
 pub struct PNGParser {
   image_header: Option<PNGHeader>,
   gamma: Option<f32>,
+  parsed_idat: bool,
+  idat_bytes: Vec<u8>,
+  palette: Option<Vec<[u8; 3]>>,
+  physical_dimensions: Option<PhysicalDimensions>,
+  background_bytes: Option<Vec<u8>>,
+  rendering_intent: Option<RenderingIntent>,
 }
 
 impl PNGParser {
@@ -17,6 +26,12 @@ impl PNGParser {
     Self {
       image_header: None,
       gamma: None,
+      parsed_idat: false,
+      idat_bytes: Vec::new(),
+      palette: None,
+      physical_dimensions: None,
+      background_bytes: None,
+      rendering_intent: None,
     }
   }
 
@@ -35,17 +50,44 @@ impl PNGParser {
 
     for chunk in &chunks[1..] {
       match chunk.r#type {
-        // Duplicate IHDR chunks
+        // Handle duplicate IHDR chunks
         ChunkType::IHDR => return Err(RSMError::InvalidContent),
+        ChunkType::PLTE => {
+          let palette: Vec<[u8; 3]> = self.handle_plte(chunk)?;
+          self.palette = Some(palette);
+        }
+        ChunkType::IDAT => {
+          self.parsed_idat = true;
+          self.idat_bytes.extend(chunk.data);
+        }
+        ChunkType::bKGD => {
+          if let Some(header) = &self.image_header {
+            let bytes: &[u8] = self.handle_bkgd(chunk, header.color_type)?;
+            self.background_bytes = Some(bytes.to_vec());
+          } else {
+            return Err(RSMError::InvalidContent);
+          }
+        }
         ChunkType::gAMA => {
           let gamma: f32 = self.handle_gama(chunk)?;
           self.gamma = Some(gamma);
+        }
+        ChunkType::pHYs => {
+          let dimensions: Option<PhysicalDimensions> = self.handle_phys(chunk)?;
+          self.physical_dimensions = dimensions;
+        }
+        ChunkType::sRGB => {
+          let intent: RenderingIntent = self.handle_srgb(chunk)?;
+          self.rendering_intent = Some(intent);
         }
         // Private / unhandled chunks
         _ => {
           println!("{:?}", chunk)
         }
       }
+    }
+    if !self.parsed_idat {
+      return Err(RSMError::InvalidContent);
     }
     Ok(())
   }

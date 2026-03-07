@@ -5,7 +5,7 @@ use crate::lib::{
 
 impl PNGParser {
   /// handle gAMA (Image gamma) chunk
-  pub(in super::super) fn handle_gama(&mut self, chunk: &Chunk<'_>) -> Result<f32, RSMError> {
+  pub(in super::super) fn handle_gama(&self, chunk: &Chunk<'_>) -> Result<f32, RSMError> {
     if let Ok::<&[u8; 4], _>(bytes) = chunk.data.try_into() {
       let value: u32 = u32::from_be_bytes(*bytes);
       if value > (i32::MAX as u32) || value == 0 {
@@ -30,7 +30,7 @@ mod tests {
   /// Test handling an array with an incorrect length
   #[test]
   fn test_invalid_gamma_length() {
-    let mut parser = PNGParser::new();
+    let parser = PNGParser::new();
     let gama_result = parser.handle_gama(&Chunk {
       r#type: ChunkType::gAMA,
       length: 3,
@@ -43,7 +43,7 @@ mod tests {
   /// Test handling the value 0
   #[test]
   fn test_null_gamma_value() {
-    let mut parser = PNGParser::new();
+    let parser = PNGParser::new();
     let gama_result = parser.handle_gama(&Chunk {
       r#type: ChunkType::gAMA,
       length: 4,
@@ -54,10 +54,10 @@ mod tests {
     assert!(gama_result.is_err())
   }
 
-  /// Test handling values superior to the max value
+  /// Test handling values exceeding the max value
   #[test]
-  fn test_superior_gamma_values() {
-    let mut parser = PNGParser::new();
+  fn test_exceeding_gamma_values() {
+    let parser = PNGParser::new();
     let gama_result = parser.handle_gama(&Chunk {
       r#type: ChunkType::gAMA,
       length: 4,

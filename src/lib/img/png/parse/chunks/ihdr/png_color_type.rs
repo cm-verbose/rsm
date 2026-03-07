@@ -1,7 +1,7 @@
 use crate::lib::util::err::rsm_error::RSMError;
 
 /// Color type used to render the image
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum ColorType {
   Greyscale = 0,
   Truecolor = 2,

@@ -1,7 +1,7 @@
 use crate::lib::util::err::rsm_error::RSMError;
 
 /// Interlace method
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum InterlaceMethod {
   Null = 0,
   Adam7 = 1,

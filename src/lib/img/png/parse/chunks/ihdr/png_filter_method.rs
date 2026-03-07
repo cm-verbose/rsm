@@ -1,7 +1,7 @@
 use crate::lib::util::err::rsm_error::RSMError;
 
 /// Method in which the image was filtered
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum FilterMethod {
   Method0 = 0,
 }

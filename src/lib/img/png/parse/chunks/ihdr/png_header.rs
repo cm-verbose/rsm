@@ -4,13 +4,13 @@ use crate::lib::img::png::parse::chunks::ihdr::{
 };
 
 /// PNG IHDR Header
-#[derive(Debug)]
-pub struct PNGHeader {
-  pub(super) width: u32,
-  pub(super) height: u32,
-  pub(super) bit_depth: BitDepth,
-  pub(super) compression_method: CompressionMethod,
-  pub(super) color_type: ColorType,
-  pub(super) filter_method: FilterMethod,
-  pub(super) interlace_method: InterlaceMethod,
+#[derive(Debug, Clone, Copy)]
+pub(in super::super::super) struct PNGHeader {
+  pub width: u32,
+  pub height: u32,
+  pub bit_depth: BitDepth,
+  pub compression_method: CompressionMethod,
+  pub color_type: ColorType,
+  pub filter_method: FilterMethod,
+  pub interlace_method: InterlaceMethod,
 }

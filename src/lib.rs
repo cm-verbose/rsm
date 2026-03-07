@@ -9,6 +9,7 @@ pub mod lib {
       }
 
       pub mod img {
+        pub mod png_data;
         pub mod png_image;
       }
 
@@ -26,8 +27,27 @@ pub mod lib {
             pub mod png_header;
             pub mod png_interlace_method;
           }
-          // gAMA - Image gamma
+
+          /// bkGD - Background color
+          pub mod handle_bkgd;
+
+          /// gAMA - Image gamma
           pub mod handle_gama;
+
+          /// pHYs - Physical pixel dimensions
+          pub mod phys {
+            pub mod handle_phys;
+            pub mod png_physical_dimensions;
+          }
+
+          /// PLTE - Palette
+          pub mod handle_plte;
+
+          /// sRGB - Standard RGB color space
+          pub mod srgb {
+            pub mod handle_srgb;
+            pub mod png_rendering_intent;
+          }
         }
         pub mod png_parser;
       }

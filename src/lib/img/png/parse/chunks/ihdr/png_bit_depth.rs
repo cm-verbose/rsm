@@ -1,7 +1,7 @@
 use crate::lib::util::err::rsm_error::RSMError;
 
 /// PNG Bit depth
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum BitDepth {
   D1 = 1,
   D2 = 2,
