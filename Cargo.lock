@@ -555,6 +555,7 @@ dependencies = [
  "memmap2",
  "page_size",
  "proptest",
+ "tempfile",
 ]
 
 [[package]]

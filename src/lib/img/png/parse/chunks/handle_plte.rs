@@ -6,7 +6,7 @@ use crate::lib::{
 impl PNGParser {
   /// Handle PLTE (Palette) chunk
   pub(in super::super) fn handle_plte(&self, chunk: &Chunk<'_>) -> Result<Vec<[u8; 3]>, RSMError> {
-    if chunk.length.is_multiple_of(3) || chunk.length > 768 || chunk.length > 0 {
+    if !chunk.length.is_multiple_of(3) || chunk.length > 768 || chunk.length == 0 {
       return Err(RSMError::InvalidLength);
     }
     let palette: Vec<[u8; 3]> = chunk

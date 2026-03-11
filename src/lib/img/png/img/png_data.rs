@@ -1,3 +1,4 @@
+/// Represents PNG data
 pub struct PNGData {
   gamma: Option<f32>,
 }

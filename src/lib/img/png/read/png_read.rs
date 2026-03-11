@@ -31,6 +31,18 @@ impl<'i> PNGImage<'i> {
 #[cfg(test)]
 mod tests {
   use super::PNGImage;
+  use crate::lib::util::data::file_data::FileData;
+  use tempfile::NamedTempFile;
+
+  /// Test reading files
+  #[test]
+  fn read_empty_file_data() {
+    let mut image: PNGImage = PNGImage::new();
+    let temp: NamedTempFile = NamedTempFile::new().expect("Failed to create temp file");
+    let empty_data = FileData::new(temp.path()).unwrap();
+
+    assert!(image.read(&empty_data).is_err())
+  }
 
   /// Tests reading raw bytes
   #[test]

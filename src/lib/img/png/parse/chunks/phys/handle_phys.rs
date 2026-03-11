@@ -40,9 +40,6 @@ impl PNGParser {
       return None;
     };
     let size: u32 = u32::from_be_bytes(bytes);
-    if size == 0 {
-      return None;
-    }
-    Some(size)
+    if size == 0 { None } else { Some(size) }
   }
 }

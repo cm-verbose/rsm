@@ -28,22 +28,38 @@ impl TryFrom<u8> for ColorType {
 #[cfg(test)]
 mod tests {
   use crate::lib::img::png::parse::chunks::ihdr::png_color_type::ColorType;
+  use proptest::prelude::*;
+  use std::{array::IntoIter, iter::Chain, ops::RangeInclusive};
 
+  /// Test if u8 values map correctly to color types ypes
   #[test]
-  fn test_color_tupe_mapping() {
-    let greyscale: ColorType = 0.try_into().unwrap();
-    assert_eq!(greyscale, ColorType::Greyscale);
+  fn test_color_type_mapping() {
+    let color_types: [ColorType; 5] = [
+      ColorType::Greyscale,
+      ColorType::Truecolor,
+      ColorType::IndexedColor,
+      ColorType::GreyscaleAlpha,
+      ColorType::TruecolorAlpha,
+    ];
 
-    let truecolor: ColorType = 2.try_into().unwrap();
-    assert_eq!(truecolor, ColorType::Truecolor);
+    // This range is not continuous, which is a combination of 0 and the range 2 to 5
+    let range: Chain<IntoIter<usize, 1>, RangeInclusive<usize>> = [0].into_iter().chain(2..=5);
+    for (num, real_type) in range.zip(color_types) {
+      let r#type: ColorType = (num as u8).try_into().unwrap();
+      assert_eq!(r#type, real_type);
+    }
+  }
 
-    let indexed_color: ColorType = 3.try_into().unwrap();
-    assert_eq!(indexed_color, ColorType::IndexedColor);
-
-    let greyscale_alpha: ColorType = 4.try_into().unwrap();
-    assert_eq!(greyscale_alpha, ColorType::GreyscaleAlpha);
-
-    let truecolor_alpha: ColorType = 5.try_into().unwrap();
-    assert_eq!(truecolor_alpha, ColorType::TruecolorAlpha);
+  proptest! {
+    /// Test random u8 values
+    #[test]
+    fn test_random_color_type_values(val in any::<u8>()) {
+      let r#type: Result<ColorType, _> = val.try_into();
+      if val == 0 || (2..=5).contains(&val) {
+        assert!(r#type.is_ok());
+      } else {
+        assert!(r#type.is_err())
+      }
+    }
   }
 }

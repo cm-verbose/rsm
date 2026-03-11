@@ -27,13 +27,13 @@ mod tests {
   /// Test mapping to existing interlace methods
   #[test]
   fn test_interlace_mapping() {
-    let num_null = 0;
-    let null_method: InterlaceMethod = num_null.try_into().unwrap();
-    assert!(null_method == InterlaceMethod::Null);
+    type Method = InterlaceMethod;
+    let methods: [Method; 2] = [Method::Null, Method::Adam7];
 
-    let num_adam = 1;
-    let adam_method: InterlaceMethod = num_adam.try_into().unwrap();
-    assert!(adam_method == InterlaceMethod::Adam7);
+    for (num, expected) in (0..=methods.len() as u8).zip(methods) {
+      let method: Method = num.try_into().unwrap();
+      assert_eq!(method, expected)
+    }
   }
 
   proptest! {

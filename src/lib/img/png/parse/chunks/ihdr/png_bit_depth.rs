@@ -28,22 +28,32 @@ impl TryFrom<u8> for BitDepth {
 #[cfg(test)]
 mod tests {
   use crate::lib::img::png::parse::chunks::ihdr::png_bit_depth::BitDepth;
+  use proptest::prelude::*;
+  use std::iter::successors;
 
+  /// Test bit depth mapping from u8 values
   #[test]
   fn test_depth_mapping() {
-    let depth_1: BitDepth = 1.try_into().unwrap();
-    assert_eq!(depth_1, BitDepth::D1);
+    type Depth = BitDepth;
+    let depths: [Depth; 5] = [Depth::D1, Depth::D2, Depth::D4, Depth::D8, Depth::D16];
+    let powers = successors(Some(1), |&prev| Some(prev * 2)).take(5);
 
-    let depth_2: BitDepth = 2.try_into().unwrap();
-    assert_eq!(depth_2, BitDepth::D2);
+    for (num, real_depth) in powers.zip(depths) {
+      let depth: Depth = num.try_into().unwrap();
+      assert_eq!(depth, real_depth)
+    }
+  }
 
-    let depth_3: BitDepth = 4.try_into().unwrap();
-    assert_eq!(depth_3, BitDepth::D4);
-
-    let depth_4: BitDepth = 8.try_into().unwrap();
-    assert_eq!(depth_4, BitDepth::D8);
-
-    let depth_16: BitDepth = 16.try_into().unwrap();
-    assert_eq!(depth_16, BitDepth::D16);
+  proptest! {
+    /// Test random bit depths
+    #[test]
+    fn test_random_depths(val in any::<u8>()) {
+      let result: Result<BitDepth, _> = val.try_into();
+      if val.is_power_of_two() && val <= 16 {
+        prop_assert!(result.is_ok());
+      } else {
+        prop_assert!(result.is_err())
+      }
+    }
   }
 }
