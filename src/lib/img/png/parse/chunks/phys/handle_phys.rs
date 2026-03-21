@@ -40,6 +40,86 @@ impl PNGParser {
       return None;
     };
     let size: u32 = u32::from_be_bytes(bytes);
-    if size == 0 { None } else { Some(size) }
+    if size == 0 || size > (i32::MAX as u32) {
+      None
+    } else {
+      Some(size)
+    }
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use crate::lib::img::png::{
+    chunk::png_chunk_type::ChunkType,
+    parse::{chunks::phys::handle_phys::Chunk, png_parser::PNGParser},
+  };
+  use proptest::{
+    collection::vec,
+    prelude::{Strategy, any},
+    prop_assert, prop_assert_eq, prop_oneof, proptest,
+  };
+
+  fn filter_vec_not_size_4() -> impl Strategy<Value = Vec<u8>> {
+    prop_oneof![vec(any::<u8>(), 0..4), vec(any::<u8>(), 5..10)]
+  }
+
+  fn filter_vec_not_size_9() -> impl Strategy<Value = Vec<u8>> {
+    prop_oneof![vec(any::<u8>(), 0..9), vec(any::<u8>(), 10..15)]
+  }
+
+  fn filter_vec_4() -> impl Strategy<Value = [u8; 4]> {
+    (0..(i32::MAX as u32)).prop_map(|v| v.to_be_bytes())
+  }
+
+  fn filter_above_i32() -> impl Strategy<Value = u32> {
+    ((i32::MAX as u32) + 1)..=u32::MAX
+  }
+
+  #[test]
+  fn test_phys_size_zero() {
+    let parser = PNGParser::new();
+    let res: Option<u32> = parser.get_phys_size(&[0, 0, 0, 0]);
+    assert!(res.is_none());
+  }
+
+  proptest! {
+    #[test]
+    fn test_phys_invalid_data_length(data in filter_vec_not_size_9()) {
+      let chunk = Chunk {
+        r#type: ChunkType::pHYs,
+        length: data.len() as u32,
+        data: &data,
+        crc: [0, 0, 0, 0]
+      };
+      let parser = PNGParser::new();
+      let res = parser.handle_phys(&chunk);
+      prop_assert!(res.is_err());
+    }
+
+    #[test]
+    fn test_phys_invalid_sizes(data in filter_vec_not_size_4()) {
+      let parser = PNGParser::new();
+      let res: Option<u32> = parser.get_phys_size(&data);
+      prop_assert!(res.is_none());
+    }
+
+    #[test]
+    fn test_phys_above_i32_sizes(data in filter_above_i32()) {
+      let parser = PNGParser::new();
+      let bytes: [u8; 4] = data.to_be_bytes();
+      let res: Option<u32> = parser.get_phys_size(&bytes);
+
+      prop_assert!(res.is_none());
+    }
+
+    #[test]
+    fn test_phys_valid_sizes(data in filter_vec_4()) {
+      let parser = PNGParser::new();
+      let res: u32 = parser.get_phys_size(&data).unwrap();
+      let expected = u32::from_be_bytes(data);
+
+      prop_assert_eq!(res, expected)
+    }
   }
 }

@@ -12,6 +12,8 @@ pub mod img {
 
 /// Parsing functions
 pub mod parse {
+  pub mod parse;
+
   /// Parsing specific chunks
   pub mod chunks {
     // IHDR - Image header

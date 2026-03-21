@@ -9,7 +9,7 @@ pub enum FileData {
 }
 
 impl FileData {
-  /// Interprets a file's path as file data
+  /// Read file data from it's path
   pub fn new(path: &Path) -> Result<Self, RSMError> {
     let mut file: File = File::open(path)?;
     let file_sz: usize = file.metadata()?.len() as usize;
