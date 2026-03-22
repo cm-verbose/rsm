@@ -12,10 +12,22 @@ pub mod img {
 
 /// Parsing functions
 pub mod parse {
-  pub mod parse;
+  pub mod png_parse;
 
   /// Parsing specific chunks
   pub mod chunks {
+    /// acTL - Animation Control Chunk
+    pub mod actl {
+      pub mod handle_actl;
+      pub mod png_animation_control;
+    }
+
+    /// cHRM - Primary chromaticities and white point
+    pub mod chrm {
+      pub mod handle_chrm;
+      pub mod png_chromacities;
+    }
+
     // IHDR - Image header
     pub mod ihdr {
       pub mod handle_ihdr;
@@ -50,6 +62,12 @@ pub mod parse {
 
     /// sBIT - Significant bits
     pub mod handle_sbit;
+
+    /// tEXt - Textual data
+    pub mod text {
+      pub mod handle_text;
+      pub mod png_text;
+    }
 
     // tRNS - Transparency
     pub mod handle_trns;

@@ -26,45 +26,59 @@ mod tests {
     chunk::{png_chunk::Chunk, png_chunk_type::ChunkType},
     parse::png_parser::PNGParser,
   };
+  use proptest::{
+    collection::vec, prelude::any, prop_assert, prop_oneof, proptest, strategy::Strategy,
+  };
 
-  /// Test handling an array with an incorrect length
-  #[test]
-  fn test_invalid_gamma_length() {
-    let parser = PNGParser::new();
-    let gama_result = parser.handle_gama(&Chunk {
-      r#type: ChunkType::gAMA,
-      length: 3,
-      data: &[2, 3, 1],
-      crc: [0, 0, 0, 0],
-    });
-    assert!(gama_result.is_err())
+  fn filter_vec_not_size_4() -> impl Strategy<Value = Vec<u8>> {
+    prop_oneof![vec(any::<u8>(), 0..4), vec(any::<u8>(), 5..10)]
   }
 
-  /// Test handling the value 0
+  fn filter_above_i32() -> impl Strategy<Value = u32> {
+    ((i32::MAX as u32) + 1)..=u32::MAX
+  }
+
   #[test]
-  fn test_null_gamma_value() {
-    let parser = PNGParser::new();
-    let gama_result = parser.handle_gama(&Chunk {
+  fn test_gama_value_zero() {
+    let chunk = Chunk {
       r#type: ChunkType::gAMA,
       length: 4,
       data: &[0, 0, 0, 0],
       crc: [0, 0, 0, 0],
-    });
+    };
+    let parser: PNGParser = PNGParser::new();
+    let res = parser.handle_gama(&chunk);
 
-    assert!(gama_result.is_err())
+    assert!(res.is_err());
   }
 
-  /// Test handling values exceeding the max value
-  #[test]
-  fn test_exceeding_gamma_values() {
-    let parser = PNGParser::new();
-    let gama_result = parser.handle_gama(&Chunk {
-      r#type: ChunkType::gAMA,
-      length: 4,
-      data: &[0xFF, 0xFF, 0xFF, 0xFF],
-      crc: [0, 0, 0, 0],
-    });
+  proptest! {
+    #[test]
+    fn test_gama_invalid_data_length(data in filter_vec_not_size_4()){
+      let chunk = Chunk {
+        r#type: ChunkType::gAMA,
+        length: data.len() as u32,
+        data: &data,
+        crc: [0, 0, 0, 0]
+      };
+      let parser: PNGParser = PNGParser::new();
+      let res = parser.handle_gama(&chunk);
 
-    assert!(gama_result.is_err())
+      prop_assert!(res.is_err());
+    }
+
+    #[test]
+    fn test_gama_invalid_i32_values(data in filter_above_i32()) {
+      let data: [u8; 4] = data.to_be_bytes();
+      let chunk = Chunk {
+        r#type: ChunkType::gAMA,
+        length: data.len() as u32,
+        data: &data,
+        crc: [0, 0, 0, 0]
+      };
+      let parser: PNGParser = PNGParser::new();
+      let res = parser.handle_gama(&chunk);
+      prop_assert!(res.is_err());
+    }
   }
 }

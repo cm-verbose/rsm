@@ -84,6 +84,7 @@ mod tests {
   }
 
   proptest! {
+    /// Test pHYs chunks in which the values are not 9
     #[test]
     fn test_phys_invalid_data_length(data in filter_vec_not_size_9()) {
       let chunk = Chunk {

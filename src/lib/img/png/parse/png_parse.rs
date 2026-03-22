@@ -3,8 +3,9 @@ use crate::lib::{
     chunk::{png_chunk::Chunk, png_chunk_type::ChunkType},
     parse::{
       chunks::{
+        actl::png_animation_control::AnimationControl, chrm::png_chromacities::Chromacities,
         ihdr::png_header::PNGHeader, phys::png_physical_dimensions::PhysicalDimensions,
-        srgb::png_rendering_intent::RenderingIntent,
+        srgb::png_rendering_intent::RenderingIntent, text::png_text::Text,
       },
       png_parser::PNGParser,
     },
@@ -40,6 +41,11 @@ impl PNGParser {
           self.idat_bytes.extend(chunk.data);
         }
 
+        ChunkType::acTL => {
+          let animation_control: Option<AnimationControl> = self.handle_actl(chunk)?;
+          self.animation_control = animation_control;
+        }
+
         ChunkType::bKGD => {
           if let Some(header) = &self.image_header {
             let bytes: &[u8] = self.handle_bkgd(chunk, header.color_type)?;
@@ -47,6 +53,11 @@ impl PNGParser {
           } else {
             return Err(RSMError::InvalidContent);
           }
+        }
+
+        ChunkType::cHRM => {
+          let chromacities: Option<Chromacities> = self.handle_chrm(chunk)?;
+          self.chromacities = chromacities;
         }
 
         ChunkType::gAMA => {
@@ -71,6 +82,11 @@ impl PNGParser {
         ChunkType::sRGB => {
           let intent: RenderingIntent = self.handle_srgb(chunk)?;
           self.rendering_intent = Some(intent);
+        }
+
+        ChunkType::tEXt => {
+          let text: Text = self.handle_text(chunk)?;
+          self.text_entries.get_or_insert(Vec::new()).push(text);
         }
 
         ChunkType::tRNS => {

@@ -4,6 +4,7 @@ use crate::lib::img::png::parse::chunks::ihdr::{
 };
 
 /// PNG IHDR Header
+#[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 pub(in super::super::super) struct PNGHeader {
   pub width: u32,

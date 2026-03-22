@@ -39,8 +39,8 @@ macro_rules! define_chunk_types {
 }
 
 define_chunk_types! {
-  IHDR, PLTE, IDAT, IEND, acTL, cHRM, cICP, gAMA, iCCP, mDCV, cLLI, sBIT, sRGB, sPLT, bKGD,
-  hIST, tRNS, eXIf, fcTL, pHYs, fdAT, tIME, iTXt, tEXt, zTXt, caBX
+  IHDR, PLTE, IDAT, IEND, acTL, bKGD, caBX, cHRM, cICP, cLLI, eXIf, fcTL, fdAT,
+  gAMA, hIST, iCCP, iTXt, mDCV, pHYs, sBIT, sRGB, sPLT, tEXt, tIME, tRNS, zTXt,
 }
 
 #[cfg(test)]

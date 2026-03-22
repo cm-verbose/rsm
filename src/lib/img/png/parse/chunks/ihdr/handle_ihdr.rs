@@ -12,22 +12,21 @@ impl PNGParser {
     &self,
     chunk: &Chunk<'_>,
   ) -> Result<PNGHeader, RSMError> {
-    if let Ok::<[u8; 13], _>(data) = chunk.data.try_into() {
-      let width: u32 = self.get_ihdr_size(&data[0..4])?;
-      let height: u32 = self.get_ihdr_size(&data[4..8])?;
+    let Ok::<[u8; 13], _>(data) = chunk.data.try_into() else {
+      return Err(RSMError::InvalidContent);
+    };
+    let width: u32 = self.get_ihdr_size(&data[0..4])?;
+    let height: u32 = self.get_ihdr_size(&data[4..8])?;
 
-      Ok(PNGHeader {
-        width,
-        height,
-        bit_depth: data[8].try_into()?,
-        color_type: data[9].try_into()?,
-        compression_method: data[10].try_into()?,
-        filter_method: data[11].try_into()?,
-        interlace_method: data[12].try_into()?,
-      })
-    } else {
-      Err(RSMError::InvalidContent)
-    }
+    Ok(PNGHeader {
+      width,
+      height,
+      bit_depth: data[8].try_into()?,
+      color_type: data[9].try_into()?,
+      compression_method: data[10].try_into()?,
+      filter_method: data[11].try_into()?,
+      interlace_method: data[12].try_into()?,
+    })
   }
 
   /// Get IHDR size (width or height)
