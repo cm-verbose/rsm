@@ -16,19 +16,7 @@ pub mod parse {
 
   /// Parsing specific chunks
   pub mod chunks {
-    /// acTL - Animation Control Chunk
-    pub mod actl {
-      pub mod handle_actl;
-      pub mod png_animation_control;
-    }
-
-    /// cHRM - Primary chromaticities and white point
-    pub mod chrm {
-      pub mod handle_chrm;
-      pub mod png_chromacities;
-    }
-
-    // IHDR - Image header
+    /// `IHDR` - Image header
     pub mod ihdr {
       pub mod handle_ihdr;
       pub mod png_bit_depth;
@@ -39,38 +27,65 @@ pub mod parse {
       pub mod png_interlace_method;
     }
 
-    /// PLTE - Palette
+    /// `PLTE` - Palette
     pub mod handle_plte;
 
-    /// bkGD - Background color
+    /// `acTL` - Animation control chunk
+    pub mod actl {
+      pub mod handle_actl;
+      pub mod png_animation_control;
+    }
+
+    /// `bkGD` - Background color
     pub mod handle_bkgd;
 
-    /// gAMA - Image gamma
+    /// `cHRM` - Primary chromaticities and white point
+    pub mod chrm {
+      pub mod handle_chrm;
+      pub mod png_chromacities;
+    }
+
+    /// `cLLI` - Content light level information
+    pub mod clli {
+      pub mod handle_clli;
+      pub mod png_light_level;
+    }
+
+    /// `gAMA` - Image gamma
     pub mod handle_gama;
 
-    /// pHYs - Physical pixel dimensions
+    /// `pHYs` - Physical pixel dimensions
     pub mod phys {
       pub mod handle_phys;
       pub mod png_physical_dimensions;
     }
 
-    /// sRGB - Standard RGB color space
+    /// `sBIT` - Significant bits
+    pub mod handle_sbit;
+
+    /// `sRGB` - Standard RGB color space
     pub mod srgb {
       pub mod handle_srgb;
       pub mod png_rendering_intent;
     }
 
-    /// sBIT - Significant bits
-    pub mod handle_sbit;
-
-    /// tEXt - Textual data
+    /// `tEXt` - Textual data
     pub mod text {
       pub mod handle_text;
       pub mod png_text;
     }
 
-    // tRNS - Transparency
+    /// `tIME` - Image last-modification time
+    pub mod time {
+      pub mod handle_time;
+      pub mod png_time;
+    }
+
+    /// `tRNS` - Transparency
     pub mod handle_trns;
+
+    /// `zTXt` - Compressed textual data
+    pub mod handle_ztxt;
   }
   pub mod png_parser;
 }

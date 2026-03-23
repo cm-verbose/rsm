@@ -20,6 +20,7 @@ impl PNGData {
 mod test {
   use crate::lib::img::png::img::png_data::PNGData;
 
+  /// Check if PNG data can be instantiated
   #[test]
   fn test_png_data_instantiation() {
     PNGData::new();

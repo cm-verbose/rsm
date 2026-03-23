@@ -4,8 +4,10 @@ use crate::lib::{
     parse::{
       chunks::{
         actl::png_animation_control::AnimationControl, chrm::png_chromacities::Chromacities,
-        ihdr::png_header::PNGHeader, phys::png_physical_dimensions::PhysicalDimensions,
+        clli::png_light_level::ContentLightLevel, ihdr::png_header::PNGHeader,
+        phys::png_physical_dimensions::PhysicalDimensions,
         srgb::png_rendering_intent::RenderingIntent, text::png_text::Text,
+        time::png_time::ModifiedTime,
       },
       png_parser::PNGParser,
     },
@@ -60,6 +62,11 @@ impl PNGParser {
           self.chromacities = chromacities;
         }
 
+        ChunkType::cLLI => {
+          let light_level: Option<ContentLightLevel> = self.handle_clli(chunk)?;
+          self.light_level = light_level;
+        }
+
         ChunkType::gAMA => {
           let gamma: f32 = self.handle_gama(chunk)?;
           self.gamma = Some(gamma);
@@ -89,6 +96,11 @@ impl PNGParser {
           self.text_entries.get_or_insert(Vec::new()).push(text);
         }
 
+        ChunkType::tIME => {
+          let time: Option<ModifiedTime> = self.handle_time(chunk)?;
+          self.modified_time = time;
+        }
+
         ChunkType::tRNS => {
           if let Some(header) = &self.image_header {
             let bytes: &[u8] = self.handle_trns(chunk, header.color_type)?;
@@ -96,6 +108,14 @@ impl PNGParser {
           } else {
             return Err(RSMError::InvalidContent);
           }
+        }
+
+        ChunkType::zTXt => {
+          let text: Text = self.handle_ztxt(chunk)?;
+          self
+            .compressed_text_entries
+            .get_or_insert(Vec::new())
+            .push(text);
         }
 
         // Private / unhandled chunks

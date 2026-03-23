@@ -23,7 +23,7 @@ impl PNGParser {
     Ok(Some(AnimationControl { frames, plays }))
   }
 
-  /// Read an acTL value
+  /// Read an `acTL` value
   fn read_actl_value(&self, data: &[u8]) -> Result<u32, RSMError> {
     let Ok::<[u8; 4], _>(data) = data.try_into() else {
       return Err(RSMError::InvalidLength);

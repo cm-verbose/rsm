@@ -4,6 +4,7 @@ use std::{error::Error, fmt::Display};
 #[derive(Debug, PartialEq)]
 pub enum RSMError {
   Empty,
+  DecompressionError,
   InvalidContent,
   InvalidCRC,
   InvalidLength,
@@ -16,6 +17,7 @@ impl Display for RSMError {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self {
       Self::Empty => write!(f, "No content provided"),
+      Self::DecompressionError => write!(f, "Error in decompression"),
       Self::InvalidContent => write!(f, "Invalid content passed"),
       Self::InvalidCRC => write!(f, "Invalid CRC for data"),
       Self::InvalidLength => write!(f, "Invalid length read"),
@@ -42,8 +44,9 @@ pub mod tests {
 
   #[test]
   fn test_existing_error_types() {
-    let error_types: [RSMError; 6] = [
+    let error_types: [RSMError; 7] = [
       RSMError::Empty,
+      RSMError::DecompressionError,
       RSMError::InvalidContent,
       RSMError::InvalidCRC,
       RSMError::InvalidLength,

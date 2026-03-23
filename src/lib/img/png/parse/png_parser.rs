@@ -6,8 +6,10 @@ use crate::lib::{
     img::png_data::PNGData,
     parse::chunks::{
       actl::png_animation_control::AnimationControl, chrm::png_chromacities::Chromacities,
-      ihdr::png_header::PNGHeader, phys::png_physical_dimensions::PhysicalDimensions,
+      clli::png_light_level::ContentLightLevel, ihdr::png_header::PNGHeader,
+      phys::png_physical_dimensions::PhysicalDimensions,
       srgb::png_rendering_intent::RenderingIntent, text::png_text::Text,
+      time::png_time::ModifiedTime,
     },
   },
   util::err::rsm_error::RSMError,
@@ -18,16 +20,20 @@ pub struct PNGParser {
   pub(super) animation_control: Option<AnimationControl>,
   pub(super) background_bytes: Option<Vec<u8>>,
   pub(super) chromacities: Option<Chromacities>,
+  pub(super) compressed_text_entries: Option<Vec<Text>>,
   pub(super) idat_bytes: Vec<u8>,
   pub(super) image_header: Option<PNGHeader>,
   pub(super) gamma: Option<f32>,
+  pub(super) light_level: Option<ContentLightLevel>,
+  pub(super) modified_time: Option<ModifiedTime>,
   pub(super) palette: Option<Vec<[u8; 3]>>,
-  pub(super) parsed_idat: bool,
   pub(super) physical_dimensions: Option<PhysicalDimensions>,
   pub(super) rendering_intent: Option<RenderingIntent>,
   pub(super) significant_bits: Option<Vec<u8>>,
   pub(super) text_entries: Option<Vec<Text>>,
   pub(super) transparency_bytes: Option<Vec<u8>>,
+
+  pub(super) parsed_idat: bool,
 }
 
 impl Default for PNGParser {
@@ -42,16 +48,20 @@ impl PNGParser {
       animation_control: None,
       background_bytes: None,
       chromacities: None,
+      compressed_text_entries: None,
       image_header: None,
       idat_bytes: Vec::new(),
       gamma: None,
+      light_level: None,
+      modified_time: None,
       palette: None,
-      parsed_idat: false,
       physical_dimensions: None,
       rendering_intent: None,
       significant_bits: None,
       text_entries: None,
       transparency_bytes: None,
+
+      parsed_idat: false,
     }
   }
 
@@ -73,5 +83,10 @@ impl PNGParser {
       rendering_intent: self.rendering_intent.clone(),
     };
     data
+  }
+
+  /// Read text from bytes (Latin-1)
+  pub(super) fn read_text(bytes: &[u8]) -> Result<String, RSMError> {
+    Ok(bytes.iter().map(|&b| b as char).collect())
   }
 }
