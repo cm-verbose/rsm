@@ -4,8 +4,9 @@ use crate::lib::{
     parse::{
       chunks::{
         actl::png_animation_control::AnimationControl, chrm::png_chromacities::Chromacities,
-        clli::png_light_level::ContentLightLevel, ihdr::png_header::PNGHeader,
-        phys::png_physical_dimensions::PhysicalDimensions,
+        cicp::png_code_points::CodePoints, clli::png_light_level::ContentLightLevel,
+        iccp::png_iccp_profile::ICCPProfile, ihdr::png_header::PNGHeader,
+        mdcv::png_color_volume::ColorVolume, phys::png_physical_dimensions::PhysicalDimensions,
         srgb::png_rendering_intent::RenderingIntent, text::png_text::Text,
         time::png_time::ModifiedTime,
       },
@@ -62,6 +63,11 @@ impl PNGParser {
           self.chromacities = chromacities;
         }
 
+        ChunkType::cICP => {
+          let code_points: CodePoints = self.handle_cicp(chunk)?;
+          self.code_points = Some(code_points);
+        }
+
         ChunkType::cLLI => {
           let light_level: Option<ContentLightLevel> = self.handle_clli(chunk)?;
           self.light_level = light_level;
@@ -70,6 +76,20 @@ impl PNGParser {
         ChunkType::gAMA => {
           let gamma: f32 = self.handle_gama(chunk)?;
           self.gamma = Some(gamma);
+        }
+
+        ChunkType::iCCP => {
+          // No duplicates
+          let Some(_) = self.iccp_profile else {
+            return Err(RSMError::InvalidContent);
+          };
+          let profile: ICCPProfile = self.handle_iccp(chunk)?;
+          self.iccp_profile = Some(profile);
+        }
+
+        ChunkType::mDCV => {
+          let volume: ColorVolume = self.handle_mdcv(chunk)?;
+          self.color_volume = Some(volume);
         }
 
         ChunkType::pHYs => {

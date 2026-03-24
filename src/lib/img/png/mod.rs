@@ -45,6 +45,12 @@ pub mod parse {
       pub mod png_chromacities;
     }
 
+    /// `cICP` - Coding-independent code points for video signal type identification
+    pub mod cicp {
+      pub mod handle_cicp;
+      pub mod png_code_points;
+    }
+
     /// `cLLI` - Content light level information
     pub mod clli {
       pub mod handle_clli;
@@ -53,6 +59,18 @@ pub mod parse {
 
     /// `gAMA` - Image gamma
     pub mod handle_gama;
+
+    /// `iCCP` - Embedded ICC profile
+    pub mod iccp {
+      pub mod handle_iccp;
+      pub mod png_iccp_profile;
+    }
+
+    /// `mDCV` - Mastering display color volume
+    pub mod mdcv {
+      pub mod handle_mdcv;
+      pub mod png_color_volume;
+    }
 
     /// `pHYs` - Physical pixel dimensions
     pub mod phys {
