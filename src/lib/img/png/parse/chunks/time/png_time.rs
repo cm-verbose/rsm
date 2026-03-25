@@ -1,4 +1,5 @@
 /// Time information parsed from the tIME chunk
+#[derive(Debug, PartialEq)]
 pub struct ModifiedTime {
   pub year: u16,
   pub month: u8,

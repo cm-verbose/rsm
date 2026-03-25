@@ -1,4 +1,4 @@
-/// Macro used to generate all chunk types available in a PNG
+/// Macro used to generate all standard chunk types for a PNG chunk
 macro_rules! define_chunk_types {
   ($($variant:ident),+ $(,)?) => {
     const fn str_to_u32(text: &str) -> u32 {

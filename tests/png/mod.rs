@@ -1,3 +1,3 @@
-pub mod basi;
+pub mod r_suite;
 pub mod test_image;
-pub mod x;
+pub mod test_png_suite;

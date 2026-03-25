@@ -1,3 +1,3 @@
-use crate::test_image;
+use crate::test_png_suite_img;
 
-test_image! { test_basi0g01, "basi0g01.png", true }
+test_png_suite_img! { basi0g01 }

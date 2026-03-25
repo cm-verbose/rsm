@@ -1,5 +1,5 @@
 /// Manifests obtained from the `caBX` chunk
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct AttributionManifest {
   pub issuer: Option<String>,
   pub label: Option<String>,

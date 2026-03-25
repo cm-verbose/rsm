@@ -24,8 +24,6 @@ impl PNGParser {
         let issuer = manifest.issuer();
         let label = manifest.label().map(String::from);
 
-        println!("{:#?}", manifest);
-
         let manifest: AttributionManifest = AttributionManifest {
           name,
           time,

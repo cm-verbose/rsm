@@ -39,6 +39,12 @@ pub mod parse {
     /// `bkGD` - Background color
     pub mod handle_bkgd;
 
+    /// `caBX` - Content Credentials
+    pub mod cabx {
+      pub mod handle_cabx;
+      pub mod png_attribution_manifest;
+    }
+
     /// `cHRM` - Primary chromaticities and white point
     pub mod chrm {
       pub mod handle_chrm;
@@ -60,11 +66,17 @@ pub mod parse {
     /// `gAMA` - Image gamma
     pub mod handle_gama;
 
+    /// `hIST` - Image histogram
+    pub mod handle_hist;
+
     /// `iCCP` - Embedded ICC profile
     pub mod iccp {
       pub mod handle_iccp;
       pub mod png_iccp_profile;
     }
+
+    /// `iTXt` - International textual data
+    pub mod handle_itxt;
 
     /// `mDCV` - Mastering display color volume
     pub mod mdcv {

@@ -3,7 +3,8 @@ use crate::lib::{
     chunk::{png_chunk::Chunk, png_chunk_type::ChunkType},
     parse::{
       chunks::{
-        actl::png_animation_control::AnimationControl, chrm::png_chromacities::Chromacities,
+        actl::png_animation_control::AnimationControl,
+        cabx::png_attribution_manifest::AttributionManifest, chrm::png_chromacities::Chromacities,
         cicp::png_code_points::CodePoints, clli::png_light_level::ContentLightLevel,
         iccp::png_iccp_profile::ICCPProfile, ihdr::png_header::PNGHeader,
         mdcv::png_color_volume::ColorVolume, phys::png_physical_dimensions::PhysicalDimensions,
@@ -31,6 +32,7 @@ impl PNGParser {
     }
 
     for chunk in &chunks[1..] {
+      println!("{:?}", chunk.r#type);
       match chunk.r#type {
         // Handle duplicate IHDR chunks
         ChunkType::IHDR => return Err(RSMError::InvalidContent),
@@ -47,6 +49,12 @@ impl PNGParser {
         ChunkType::acTL => {
           let animation_control: Option<AnimationControl> = self.handle_actl(chunk)?;
           self.animation_control = animation_control;
+        }
+
+        ChunkType::caBX => {
+          let manifests: Option<Vec<AttributionManifest>> = self.handle_cabx(chunk);
+          println!("{:?}", manifests);
+          self.attribution_manifests = manifests;
         }
 
         ChunkType::bKGD => {
@@ -78,6 +86,11 @@ impl PNGParser {
           self.gamma = Some(gamma);
         }
 
+        ChunkType::hIST => {
+          let histogram: Option<Vec<u16>> = self.handle_hist(chunk)?;
+          self.histogram = histogram;
+        }
+
         ChunkType::iCCP => {
           // No duplicates
           let Some(_) = self.iccp_profile else {
@@ -85,6 +98,10 @@ impl PNGParser {
           };
           let profile: ICCPProfile = self.handle_iccp(chunk)?;
           self.iccp_profile = Some(profile);
+        }
+
+        ChunkType::iTXt => {
+          self.handle_itxt(chunk)?;
         }
 
         ChunkType::mDCV => {
@@ -140,7 +157,9 @@ impl PNGParser {
 
         // Private / unhandled chunks
         _ => {
-          println!("{:?}", chunk.r#type)
+          let chunk_type: ChunkType = chunk.r#type;
+          let display = String::from_utf8(chunk_type.as_bytes().to_vec()).unwrap();
+          println!("Unknown chunk: {:?}", display)
         }
       }
     }

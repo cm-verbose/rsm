@@ -1,5 +1,6 @@
 /// Physical pixel dimensions (pHYs)
 #[allow(unused)]
+#[derive(Debug, PartialEq)]
 pub struct PhysicalDimensions {
   /// Pixels per unit on the X axis
   pub(in super::super) pp_x: u32,

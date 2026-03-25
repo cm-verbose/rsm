@@ -1,5 +1,6 @@
 /// Code points obtained from the cICP chunk (structs not implemented for the)
 /// sake of simplicity.
+#[derive(Debug, PartialEq)]
 pub struct CodePoints {
   pub color_primaries: u8,
   pub transfer_function: u8,

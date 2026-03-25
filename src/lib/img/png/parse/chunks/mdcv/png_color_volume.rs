@@ -1,3 +1,4 @@
+#[derive(Debug, PartialEq)]
 pub struct ColorVolume {
   pub chromacities: [(u16, u16); 3],
   pub white_point: u32,

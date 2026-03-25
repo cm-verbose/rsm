@@ -1,4 +1,5 @@
 /// Represents PNG text and its different forms
+#[derive(Debug, PartialEq)]
 pub enum Text {
   /// Text obtained from the `tEXt` (Textual data) chunk
   Text(String, String),

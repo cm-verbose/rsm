@@ -5,7 +5,8 @@ use crate::lib::{
     chunk::png_chunk::Chunk,
     img::png_data::PNGData,
     parse::chunks::{
-      actl::png_animation_control::AnimationControl, chrm::png_chromacities::Chromacities,
+      actl::png_animation_control::AnimationControl,
+      cabx::png_attribution_manifest::AttributionManifest, chrm::png_chromacities::Chromacities,
       cicp::png_code_points::CodePoints, clli::png_light_level::ContentLightLevel,
       iccp::png_iccp_profile::ICCPProfile, ihdr::png_header::PNGHeader,
       mdcv::png_color_volume::ColorVolume, phys::png_physical_dimensions::PhysicalDimensions,
@@ -17,13 +18,16 @@ use crate::lib::{
 };
 
 /// Parse chunks into meaningful data
+#[derive(Debug, PartialEq)]
 pub struct PNGParser {
   pub(super) animation_control: Option<AnimationControl>,
+  pub(super) attribution_manifests: Option<Vec<AttributionManifest>>,
   pub(super) background_bytes: Option<Vec<u8>>,
   pub(super) chromacities: Option<Chromacities>,
   pub(super) code_points: Option<CodePoints>,
   pub(super) color_volume: Option<ColorVolume>,
   pub(super) compressed_text_entries: Option<Vec<Text>>,
+  pub(super) histogram: Option<Vec<u16>>,
   pub(super) iccp_profile: Option<ICCPProfile>,
   pub(super) idat_bytes: Vec<u8>,
   pub(super) image_header: Option<PNGHeader>,
@@ -50,11 +54,13 @@ impl PNGParser {
   pub fn new() -> Self {
     Self {
       animation_control: None,
+      attribution_manifests: None,
       background_bytes: None,
       chromacities: None,
       code_points: None,
       color_volume: None,
       compressed_text_entries: None,
+      histogram: None,
       iccp_profile: None,
       image_header: None,
       idat_bytes: Vec::new(),
@@ -95,5 +101,15 @@ impl PNGParser {
   /// Read text from bytes (Latin-1)
   pub(super) fn read_text(bytes: &[u8]) -> Result<String, RSMError> {
     Ok(bytes.iter().map(|&b| b as char).collect())
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use crate::lib::img::png::parse::png_parser::PNGParser;
+
+  #[test]
+  fn test_parser_default() {
+    assert_eq!(PNGParser::default(), PNGParser::new())
   }
 }
