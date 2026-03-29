@@ -1,5 +1,6 @@
 use crate::lib::util::err::rsm_error::RSMError;
 
+#[derive(Debug)]
 pub enum FrameAreaDisposal {
   None = 0,
   Background = 1,

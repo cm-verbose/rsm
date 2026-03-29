@@ -1,63 +1,19 @@
 use crate::lib::{
-  img::png::{
-    chunk::png_chunk::Chunk,
-    parse::{chunks::ihdr::png_color_type::ColorType, png_parser::PNGParser},
-  },
+  img::png::parse::chunks::{ihdr::png_color_type::ColorType, utils::get_bytes},
   util::err::rsm_error::RSMError,
 };
 
-impl PNGParser {
-  /// Handle bKGD (Background color) chunk
-  pub(in super::super) fn handle_bkgd<'a>(
-    &self,
-    chunk: &Chunk<'a>,
-    color_type: ColorType,
-  ) -> Result<&'a [u8], RSMError> {
-    let range_end: usize = match color_type {
-      // Color types: 0, 4
-      ColorType::Greyscale | ColorType::GreyscaleAlpha => 2,
+/// Handle `bKGD` (Background color) chunk
+pub(crate) fn handle_bkgd(data: &[u8], color_type: ColorType) -> Result<&[u8], RSMError> {
+  let range_end: usize = match color_type {
+    // Color types: 0, 4
+    ColorType::Greyscale | ColorType::GreyscaleAlpha => 2,
 
-      // Color types: 2, 6
-      ColorType::Truecolor | ColorType::TruecolorAlpha => 6,
+    // Color types: 2, 6
+    ColorType::Truecolor | ColorType::TruecolorAlpha => 6,
 
-      // Color type: 3
-      ColorType::IndexedColor => 1,
-    };
-    Self::get_bytes(0..range_end, chunk)
-  }
-}
-
-#[cfg(test)]
-mod tests {
-  use crate::lib::img::png::{
-    chunk::{png_chunk::Chunk, png_chunk_type::ChunkType},
-    parse::{chunks::ihdr::png_color_type::ColorType, png_parser::PNGParser},
+    // Color type: 3
+    ColorType::IndexedColor => 1,
   };
-
-  #[test]
-  fn test_bkgd_mapping() {
-    let data = &[1, 2, 3, 4, 5, 6];
-    let data_len = data.len();
-
-    let chunk: Chunk<'_> = Chunk {
-      length: data_len as u32,
-      r#type: ChunkType::tRNS,
-      data,
-      crc: [0, 0, 0, 0],
-    };
-
-    let expected: [(ColorType, usize); 5] = [
-      (ColorType::Greyscale, 2),
-      (ColorType::GreyscaleAlpha, 2),
-      (ColorType::Truecolor, 6),
-      (ColorType::TruecolorAlpha, 6),
-      (ColorType::IndexedColor, 1),
-    ];
-    let parser: PNGParser = PNGParser::new();
-
-    for pair in expected {
-      let res = parser.handle_bkgd(&chunk, pair.0).unwrap();
-      assert_eq!(res.len(), pair.1);
-    }
-  }
+  get_bytes(0..range_end, data)
 }

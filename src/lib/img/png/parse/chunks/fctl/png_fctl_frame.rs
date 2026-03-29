@@ -2,6 +2,7 @@ use crate::lib::img::png::parse::chunks::fctl::{
   png_alpha_blend::AlphaBlend, png_frame_area_disposal::FrameAreaDisposal,
 };
 
+#[derive(Debug)]
 pub struct FCTLFrame {
   pub sequence_number: u32,
   pub width: u32,

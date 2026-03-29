@@ -1,115 +1,51 @@
-use std::ops::Range;
-
 use crate::lib::{
   img::png::{
-    chunk::png_chunk::Chunk,
-    img::png_data::PNGData,
-    parse::chunks::{
-      actl::png_animation_control::AnimationControl,
-      cabx::png_attribution_manifest::AttributionManifest, chrm::png_chromacities::Chromacities,
-      cicp::png_code_points::CodePoints, clli::png_light_level::ContentLightLevel,
-      iccp::png_iccp_profile::ICCPProfile, ihdr::png_header::PNGHeader,
-      mdcv::png_color_volume::ColorVolume, phys::png_physical_dimensions::PhysicalDimensions,
-      srgb::png_rendering_intent::RenderingIntent, text::png_text::Text,
-      time::png_time::ModifiedTime,
-    },
+    chunk::{png_chunk::Chunk, png_chunk_type::ChunkType},
+    parse::states::png_state::{PNGState, ReadSignature},
+    reader::png_reader::PNGReader,
   },
   util::err::rsm_error::RSMError,
 };
+use std::marker::PhantomData;
 
-/// Parse chunks into meaningful data
-#[derive(Debug, PartialEq)]
-pub struct PNGParser {
-  pub(super) animation_control: Option<AnimationControl>,
-  pub(super) attribution_manifests: Option<Vec<AttributionManifest>>,
-  pub(super) background_bytes: Option<Vec<u8>>,
-  pub(super) chromacities: Option<Chromacities>,
-  pub(super) code_points: Option<CodePoints>,
-  pub(super) color_volume: Option<ColorVolume>,
-  pub(super) compressed_text_entries: Option<Vec<Text>>,
-  pub(super) histogram: Option<Vec<u16>>,
-  pub(super) iccp_profile: Option<ICCPProfile>,
-  pub(super) idat_bytes: Vec<u8>,
-  pub(super) image_header: Option<PNGHeader>,
-  pub(super) gamma: Option<f32>,
-  pub(super) light_level: Option<ContentLightLevel>,
-  pub(super) modified_time: Option<ModifiedTime>,
-  pub(super) palette: Option<Vec<[u8; 3]>>,
-  pub(super) physical_dimensions: Option<PhysicalDimensions>,
-  pub(super) rendering_intent: Option<RenderingIntent>,
-  pub(super) significant_bits: Option<Vec<u8>>,
-  pub(super) text_entries: Option<Vec<Text>>,
-  pub(super) transparency_bytes: Option<Vec<u8>>,
-
-  pub(super) parsed_idat: bool,
+/// PNG image parser.
+pub struct PNGParser<'p, S: PNGState> {
+  pub(crate) reader: PNGReader<'p>,
+  pub(crate) _state: PhantomData<S>,
 }
 
-impl Default for PNGParser {
-  fn default() -> Self {
-    Self::new()
-  }
-}
+impl<'p, S: PNGState> PNGParser<'p, S> {
+  /// Read a chunk
+  pub(crate) fn read_chunk(&mut self) -> Result<Chunk<'p>, RSMError> {
+    let length_bytes: [u8; 4] = *self.reader.take_sized::<4>()?;
+    let length: u32 = u32::from_be_bytes(length_bytes);
 
-impl PNGParser {
-  pub fn new() -> Self {
-    Self {
-      animation_control: None,
-      attribution_manifests: None,
-      background_bytes: None,
-      chromacities: None,
-      code_points: None,
-      color_volume: None,
-      compressed_text_entries: None,
-      histogram: None,
-      iccp_profile: None,
-      image_header: None,
-      idat_bytes: Vec::new(),
-      gamma: None,
-      light_level: None,
-      modified_time: None,
-      palette: None,
-      physical_dimensions: None,
-      rendering_intent: None,
-      significant_bits: None,
-      text_entries: None,
-      transparency_bytes: None,
-
-      parsed_idat: false,
+    if length > (i32::MAX as u32) {
+      return Err(RSMError::OutOfBounds);
     }
-  }
 
-  /// Gets bytes from a range
-  pub(super) fn get_bytes<'a>(
-    range: Range<usize>,
-    chunk: &Chunk<'a>,
-  ) -> Result<&'a [u8], RSMError> {
-    let Some(bytes) = chunk.data.get(range) else {
-      return Err(RSMError::NotEnoughContent);
-    };
-    Ok(bytes)
-  }
+    let chunk_type_bytes: [u8; 4] = *self.reader.take_sized::<4>()?;
+    let chunk_u32: u32 = u32::from_be_bytes(chunk_type_bytes);
+    let r#type: ChunkType = chunk_u32.into();
 
-  /// Map parsed data to for usage
-  pub(super) fn map_png_data(&self) -> PNGData {
-    let data: PNGData = PNGData {
-      gamma: self.gamma,
-      rendering_intent: self.rendering_intent.clone(),
-    };
-    data
-  }
+    let data: &[u8] = self.reader.take(length as usize)?;
+    let crc: [u8; 4] = *self.reader.take_sized::<4>()?;
 
-  /// Read text from bytes (Latin-1)
-  pub(super) fn read_text(bytes: &[u8]) -> Result<String, RSMError> {
-    Ok(bytes.iter().map(|&b| b as char).collect())
+    Ok(Chunk {
+      length,
+      r#type,
+      data,
+      crc,
+    })
   }
 }
 
-#[cfg(test)]
-mod tests {
-  use crate::lib::img::png::parse::png_parser::PNGParser;
-
-  #[test]
-  fn test_parser_default() {
-    assert_eq!(PNGParser::default(), PNGParser::new())
+impl<'p> PNGParser<'p, ReadSignature> {
+  /// Create a new PNG image parser
+  pub fn new(bytes: &'p [u8]) -> Self {
+    Self {
+      reader: PNGReader::new(bytes),
+      _state: PhantomData,
+    }
   }
 }

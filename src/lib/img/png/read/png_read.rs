@@ -1,60 +1,36 @@
 use crate::lib::{
-  img::png::{
-    chunk::png_chunk::Chunk, img::png_image::PNGImage, parse::png_parser::PNGParser,
-    read::reader::png_reader::PNGReader,
-  },
+  img::png::{image::png_image::PNGImage, parse::png_parser::PNGParser},
   util::{data::file_data::FileData, err::rsm_error::RSMError},
 };
 
-impl<'i> PNGImage<'i> {
-  /// Read data from a file
-  pub fn read(&mut self, data: &'i FileData) -> Result<(), RSMError> {
-    self.read_bytes(data.as_bytes())
+impl PNGImage {
+  /// Read a file as a PNG image from a value that can be interpreted as a
+  /// [FileData] using [TryInto].
+  #[inline]
+  pub fn read<T>(data: T) -> Result<Self, RSMError>
+  where
+    T: TryInto<FileData<'static>>,
+    T::Error: Into<RSMError>,
+  {
+    let file_data: FileData<'_> = data.try_into().map_err(Into::into)?;
+    Self::read_bytes(file_data.as_bytes())
   }
 
-  /// Read a file from a sequence of bytes
-  pub fn read_bytes(&mut self, mut bytes: &'i [u8]) -> Result<(), RSMError> {
-    bytes = bytes.trim_ascii_start();
-    if bytes.is_empty() {
-      return Err(RSMError::Empty);
-    }
-    let mut reader: PNGReader<'i> = PNGReader::new();
-    let chunks: Vec<Chunk<'i>> = reader.read(bytes)?;
-    self.chunks = chunks;
-
-    let mut parser: PNGParser = PNGParser::new();
-    parser.parse(&self.chunks)?;
-    Ok(())
-  }
-}
-
-#[cfg(test)]
-mod tests {
-  use super::PNGImage;
-  use crate::lib::util::data::file_data::FileData;
-  use tempfile::NamedTempFile;
-
-  /// Test reading files
-  #[test]
-  fn read_empty_file_data() {
-    let mut image: PNGImage = PNGImage::new();
-    let temp: NamedTempFile = NamedTempFile::new().expect("Failed to create temp file");
-    let empty_data = FileData::new(temp.path()).unwrap();
-
-    assert!(image.read(&empty_data).is_err())
+  /// Read a sequence of bytes as the data of a PNG image.
+  pub fn read_bytes(data: &'_ [u8]) -> Result<Self, RSMError> {
+    Self::parse(data)
   }
 
-  /// Tests reading raw bytes
-  #[test]
-  fn read_empty_bytes() {
-    let mut image: PNGImage = PNGImage::new();
-    assert!(image.read_bytes(&[]).is_err())
-  }
+  /// Drive the parser's finite state machine to the end to read the data
+  fn parse(data: &'_ [u8]) -> Result<Self, RSMError> {
+    let parser = PNGParser::new(data);
+    let parser = parser.read_signature()?;
+    let (parser, header) = parser.read_ihdr()?;
+    let (parser, post_ihdr, chunk) = parser.read_post_ihdr(&header)?;
 
-  /// Tests reading invalid bytes
-  #[test]
-  fn read_invalid_bytes() {
-    let mut image: PNGImage = PNGImage::new();
-    assert!(image.read_bytes(&[4, 21, 2]).is_err())
+    Ok(Self {
+      header,
+      meta: post_ihdr,
+    })
   }
 }

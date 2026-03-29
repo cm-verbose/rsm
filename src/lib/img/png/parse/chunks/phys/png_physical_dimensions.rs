@@ -1,4 +1,4 @@
-/// Physical pixel dimensions (pHYs)
+/// Physical pixel dimensions (`pHYs`)
 #[allow(unused)]
 #[derive(Debug, PartialEq)]
 pub struct PhysicalDimensions {

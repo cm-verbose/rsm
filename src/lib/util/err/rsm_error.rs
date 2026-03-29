@@ -1,76 +1,80 @@
-use std::{error::Error, fmt::Display};
+use std::{
+  error::Error,
+  fmt::{Display, Formatter, Result},
+  io,
+};
+use strum_macros::EnumIter;
 
-/// rsm errors
-#[derive(Debug, PartialEq)]
+/// Represents errors that can occur during the processing of ressources.
+/// These errors try to abstract internal errors in a more manageable way.
+#[derive(Debug, EnumIter)]
 pub enum RSMError {
-  Empty,
   DecompressionError,
   InvalidContent,
-  InvalidCRC,
+  InvalidFile,
   InvalidLength,
-  InvalidSignature,
   NotEnoughContent,
-  OtherError(String),
+  OutOfBounds,
+  Other(String),
 }
 
 impl Display for RSMError {
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    match self {
-      Self::Empty => write!(f, "No content provided"),
-      Self::DecompressionError => write!(f, "Error in decompression"),
-      Self::InvalidContent => write!(f, "Invalid content passed"),
-      Self::InvalidCRC => write!(f, "Invalid CRC for data"),
-      Self::InvalidLength => write!(f, "Invalid length read"),
-      Self::InvalidSignature => write!(f, "Invalid image signature"),
-      Self::NotEnoughContent => write!(f, "Expected more content"),
-      Self::OtherError(msg) => write!(f, "{msg}"),
-    }
+  fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+    let message: &str = match self {
+      Self::DecompressionError => "Failed to decompress content",
+      Self::InvalidContent => "File contents are invalid",
+      Self::InvalidFile => "Invalid file data or path",
+      Self::InvalidLength => "Invalid lenght for data provided",
+      Self::NotEnoughContent => "Not enough content to read",
+      Self::OutOfBounds => "Value is out of bounds",
+      Self::Other(msg) => &msg.to_string(),
+    };
+    write!(f, "{message}")
   }
 }
 
 impl Error for RSMError {}
 
-impl From<std::io::Error> for RSMError {
-  fn from(value: std::io::Error) -> Self {
-    RSMError::OtherError(value.to_string())
+impl From<io::Error> for RSMError {
+  fn from(value: io::Error) -> Self {
+    Self::Other(value.to_string())
   }
 }
 
 #[cfg(test)]
 pub mod tests {
   use super::*;
-  use proptest::prelude::{prop_assert, prop_assert_eq, proptest};
-  use std::io::{self, ErrorKind};
+  use proptest::{prop_assert, prop_assert_eq, proptest};
+  use std::{io::ErrorKind, mem::discriminant};
+  use strum::IntoEnumIterator;
 
+  /// Test the messages defined within [RSMError] are not empty for a way to
+  /// identify causes when an error occurs. This excludes the
+  /// [`RSMError::Other`] variant.
   #[test]
-  fn test_existing_error_types() {
-    let error_types: [RSMError; 7] = [
-      RSMError::Empty,
-      RSMError::DecompressionError,
-      RSMError::InvalidContent,
-      RSMError::InvalidCRC,
-      RSMError::InvalidLength,
-      RSMError::InvalidSignature,
-      RSMError::NotEnoughContent,
-    ];
-
-    for error_type in error_types {
-      assert!(!error_type.to_string().is_empty());
+  fn test_errors_defined_types() {
+    for error in RSMError::iter() {
+      if discriminant(&error) == discriminant(&RSMError::Other("".to_string())) {
+        continue;
+      }
+      assert!(!error.to_string().is_empty())
     }
   }
 
   proptest! {
-    /// Tests io errors wrap correctly
+    /// Test the [RSMError::Other](`RSMError::Other`) variant can appropriately
+    /// generate error messages given a sequence of strings based on
+    /// [`io::Error`].
     #[test]
-    fn test_native_error_wrapping(message in ".+") {
-      let error = io::Error::new(ErrorKind::Other, message.clone());
-      let err = RSMError::from(error);
+    fn test_errors_other_mapping(message in ".+") {
+      let error: io::Error = io::Error::new(ErrorKind::Other, message.clone());
+      let mapped_error = RSMError::from(error);
 
-      if let RSMError::OtherError(ref inner_err) = err {
-        prop_assert_eq!(inner_err, &message);
-        prop_assert!(!err.to_string().is_empty())
+      if let RSMError::Other(ref inner) = mapped_error {
+        prop_assert_eq!(inner, &message);
+        prop_assert!(!mapped_error.to_string().is_empty())
       } else {
-        prop_assert!(false, "Expected RSMError::OtherError(_)")
+        prop_assert!(false, "Expected a valid value v from RSMError::Other(v)");
       }
     }
   }

@@ -1,19 +1,26 @@
-use crate::lib::img::png::chunk::png_chunk_type::ChunkType;
+use crate::lib::{img::png::chunk::png_chunk_type::ChunkType, util::err::rsm_error::RSMError};
 
-/// Representation of a PNG chunk
-#[derive(Debug)]
-pub struct Chunk<'a> {
-  /// Length of the data field.
+pub struct Chunk<'c> {
   pub length: u32,
-
-  /// The [type](ChunkType) of this given chunk, as per the PNG specification.
-  /// Unknown chunks will be defined as [private](ChunkType::Private) chunks,
-  /// and should be handled appropriately.
   pub r#type: ChunkType,
-
-  /// Chunk data, spanning *n* bytes.
-  pub data: &'a [u8],
-
-  /// CRC (Cyclic redundancy check) value used for error correction.
+  pub data: &'c [u8],
   pub crc: [u8; 4],
+}
+
+impl<'c> Chunk<'c> {
+  pub(crate) fn parse_data<T, F>(&self, parse: F) -> Result<T, RSMError>
+  where
+    F: FnOnce(&'c [u8]) -> Result<T, RSMError>,
+  {
+    parse(self.data)
+  }
+
+  /// Parse data expected to have a particular length **N**.
+  pub(crate) fn parse_data_sized<const N: usize, T, F>(&self, parse: F) -> Result<T, RSMError>
+  where
+    F: FnOnce(&'c [u8; N]) -> Result<T, RSMError>,
+  {
+    let data: &'c [u8; N] = self.data.try_into().map_err(|_| RSMError::InvalidLength)?;
+    parse(data)
+  }
 }

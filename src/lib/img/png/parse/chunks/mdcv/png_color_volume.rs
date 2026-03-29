@@ -1,3 +1,5 @@
+/// Color volume information from the `mDCV` (Mastering display color volume)
+/// chunk.
 #[derive(Debug, PartialEq)]
 pub struct ColorVolume {
   pub chromacities: [(u16, u16); 3],

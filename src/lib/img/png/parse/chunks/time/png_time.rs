@@ -1,6 +1,6 @@
-/// Time information parsed from the tIME chunk
+/// Last-modification time from the `tIME` chunk
 #[derive(Debug, PartialEq)]
-pub struct ModifiedTime {
+pub struct ModificationTime {
   pub year: u16,
   pub month: u8,
   pub day: u8,
