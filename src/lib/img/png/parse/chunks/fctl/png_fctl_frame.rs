@@ -4,7 +4,7 @@ use crate::lib::img::png::parse::{
 };
 
 #[derive(Debug)]
-pub struct FCTLFrame {
+pub struct FrameControl {
   pub sequence_number: PNGInt,
   pub width: PNGInt,
   pub height: PNGInt,

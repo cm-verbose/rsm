@@ -27,7 +27,7 @@ impl PNGImage {
     let parser = parser.read_signature()?;
     let (parser, header) = parser.read_ihdr()?;
     let (parser, post_ihdr, first_idat) = parser.read_post_ihdr(&header)?;
-    let parser = parser.read_idat(&first_idat, &header)?;
+    let _parser = parser.read_idat(&first_idat, &header)?;
 
     Ok(Self {
       header,

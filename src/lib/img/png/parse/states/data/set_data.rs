@@ -5,13 +5,13 @@ use crate::lib::{
       chunks::{
         actl::handle_actl::handle_actl, cabx::handle_cabx::handle_cabx,
         chrm::handle_chrm::handle_chrm, cicp::handle_cicp::handle_cicp,
-        clli::handle_clli::handle_clli, fctl::handle_fctl::handle_fctl, handle_bkgd::handle_bkgd,
-        handle_gama::handle_gama, handle_hist::handle_hist, handle_plte::handle_plte,
-        handle_sbit::handle_sbit, handle_trns::handle_trns, handle_ztxt::handle_ztxt,
-        iccp::handle_iccp::handle_iccp, ihdr::png_header::PNGHeader,
-        mdcv::handle_mdcv::handle_mdcv, phys::handle_phys::handle_phys,
-        srgb::handle_srgb::handle_srgb, text::handle_text::handle_text,
-        time::handle_time::handle_time,
+        clli::handle_clli::handle_clli, exif::handle_exif::handle_exif,
+        fctl::handle_fctl::handle_fctl, handle_bkgd::handle_bkgd, handle_gama::handle_gama,
+        handle_hist::handle_hist, handle_plte::handle_plte, handle_sbit::handle_sbit,
+        handle_trns::handle_trns, handle_ztxt::handle_ztxt, iccp::handle_iccp::handle_iccp,
+        ihdr::png_header::PNGHeader, mdcv::handle_mdcv::handle_mdcv,
+        phys::handle_phys::handle_phys, srgb::handle_srgb::handle_srgb,
+        text::handle_text::handle_text, time::handle_time::handle_time,
       },
       states::data::png_metadata::PNGMetadata,
     },
@@ -58,6 +58,12 @@ impl PNGMetadata {
       ChunkType::cLLI => {
         if let Ok(light_level) = chunk.parse_data_sized::<8, _, _>(|&data| handle_clli(data)) {
           self.light_level = light_level;
+        }
+      }
+
+      ChunkType::eXIf => {
+        if let Ok(exif) = chunk.parse_data(handle_exif) {
+          self.exif = Some(exif);
         }
       }
 

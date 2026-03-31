@@ -2,7 +2,7 @@ use crate::lib::{
   img::png::parse::{
     chunks::{
       fctl::{
-        png_alpha_blend::AlphaBlend, png_fctl_frame::FCTLFrame,
+        png_alpha_blend::AlphaBlend, png_fctl_frame::FrameControl,
         png_frame_area_disposal::FrameAreaDisposal,
       },
       ihdr::png_header::PNGHeader,
@@ -16,7 +16,7 @@ use crate::lib::{
 pub(in super::super::super) fn handle_fctl(
   data: [u8; 26],
   header: &PNGHeader,
-) -> Result<Option<FCTLFrame>, RSMError> {
+) -> Result<Option<FrameControl>, RSMError> {
   let sequence_number: PNGInt = data[0..4].try_into()?;
   let width: PNGInt = data[4..8].try_into()?;
   let height: PNGInt = data[8..12].try_into()?;
@@ -42,7 +42,7 @@ pub(in super::super::super) fn handle_fctl(
   let dispose_op: FrameAreaDisposal = data[24].try_into()?;
   let blend_op: AlphaBlend = data[25].try_into()?;
 
-  Ok(Some(FCTLFrame {
+  Ok(Some(FrameControl {
     sequence_number,
     width,
     height,

@@ -37,6 +37,11 @@ pub mod clli {
   pub mod png_light_level;
 }
 
+pub mod exif {
+  pub mod handle_exif;
+  pub mod png_exif;
+}
+
 pub mod fctl {
   pub mod handle_fctl;
   pub mod png_alpha_blend;

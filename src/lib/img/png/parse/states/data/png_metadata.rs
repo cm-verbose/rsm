@@ -2,10 +2,10 @@ use crate::lib::img::png::parse::chunks::{
   actl::png_animation_control::AnimationControl,
   cabx::png_attribution_manifest::AttributionManifest, chrm::png_chromaticities::Chromaticities,
   cicp::png_code_points::CodePoints, clli::png_light_level::ContentLightLevel,
-  fctl::png_fctl_frame::FCTLFrame, iccp::png_icc_profile::ICCProfile,
-  mdcv::png_color_volume::ColorVolume, phys::png_physical_dimensions::PhysicalDimensions,
-  srgb::png_rendering_intent::RenderingIntent, text::png_text::Text,
-  time::png_time::ModificationTime,
+  exif::png_exif::PNGExifData, fctl::png_fctl_frame::FrameControl,
+  iccp::png_icc_profile::ICCProfile, mdcv::png_color_volume::ColorVolume,
+  phys::png_physical_dimensions::PhysicalDimensions, srgb::png_rendering_intent::RenderingIntent,
+  text::png_text::Text, time::png_time::ModificationTime,
 };
 
 #[derive(Default, Debug)]
@@ -14,7 +14,8 @@ pub struct PNGMetadata {
   pub attribution_manifests: Option<Vec<AttributionManifest>>,
   pub background_bytes: Option<Vec<u8>>,
   pub code_points: Option<CodePoints>,
-  pub frames: Option<Vec<FCTLFrame>>,
+  pub exif: Option<PNGExifData>,
+  pub frames: Option<Vec<FrameControl>>,
   pub gamma: Option<f32>,
   pub chromaticities: Option<Chromaticities>,
   pub color_volume: Option<ColorVolume>,

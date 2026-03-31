@@ -16,7 +16,7 @@ impl<'p> PNGParser<'p, ReadIDAT> {
   pub(crate) fn read_idat(
     mut self,
     first: &Chunk<'_>,
-    header: &PNGHeader,
+    _header: &PNGHeader,
   ) -> Result<PNGParser<'p, ReadPostIDAT>, RSMError> {
     let mut idat_bytes: Vec<u8> = Vec::new();
     idat_bytes.extend_from_slice(first.data);

@@ -22,7 +22,7 @@ macro_rules! define_png_enum {
       $($variant: ident = $value: expr),+ $(,)?
     }
   ) => {
-    use crate::lib::util::err::rsm_error::RSMError;
+    use $crate::lib::util::err::rsm_error::RSMError;
 
     $(#[$meta])*
     $vis enum $name {
