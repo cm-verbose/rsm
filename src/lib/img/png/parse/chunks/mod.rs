@@ -7,6 +7,7 @@ pub mod ihdr {
   pub mod png_header;
   pub mod png_interlace_method;
 }
+
 pub mod handle_plte;
 
 pub mod actl {

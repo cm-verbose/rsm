@@ -1,4 +1,4 @@
-/// Chromacity values parsed from the cHRM chunk
+/// Chromacity values parsed from the `cHRM` chunk
 #[derive(Debug, PartialEq)]
 pub struct Chromaticities {
   // White point (x, y) position representation

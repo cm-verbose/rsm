@@ -1,6 +1,8 @@
+use crate::lib::img::png::parse::values::png_int::PNGInt;
+
 ///  Animation control values from the acTL chunk
 #[derive(Debug, PartialEq)]
 pub struct AnimationControl {
-  pub frames: u32,
-  pub plays: u32,
+  pub frames: PNGInt,
+  pub plays: PNGInt,
 }

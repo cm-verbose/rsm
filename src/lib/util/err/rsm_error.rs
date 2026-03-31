@@ -3,11 +3,11 @@ use std::{
   fmt::{Display, Formatter, Result},
   io,
 };
-use strum_macros::EnumIter;
 
 /// Represents errors that can occur during the processing of ressources.
 /// These errors try to abstract internal errors in a more manageable way.
-#[derive(Debug, EnumIter)]
+#[derive(Debug)]
+#[cfg_attr(test, derive(strum_macros::EnumIter))]
 pub enum RSMError {
   DecompressionError,
   InvalidContent,

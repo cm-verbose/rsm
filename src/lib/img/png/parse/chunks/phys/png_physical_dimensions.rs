@@ -3,11 +3,11 @@
 #[derive(Debug, PartialEq)]
 pub struct PhysicalDimensions {
   /// Pixels per unit on the X axis
-  pub(in super::super) pp_x: u32,
+  pub pp_x: u32,
 
   /// Pixels per unit on the Y axis
-  pub(in super::super) pp_y: u32,
+  pub pp_y: u32,
 
   // Determines if the physical dimensions unit is the meter
-  pub(in super::super) is_meter: bool,
+  pub is_meter: bool,
 }

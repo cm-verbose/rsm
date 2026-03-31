@@ -37,7 +37,7 @@ impl PNGMetadata {
       ChunkType::caBX => {
         if let Ok(manifest) = chunk.parse_data(handle_cabx) {
           self
-            .attribution_manifest
+            .attribution_manifests
             .get_or_insert(Vec::new())
             .extend(manifest.unwrap())
         }
@@ -49,15 +49,15 @@ impl PNGMetadata {
         }
       }
 
-      ChunkType::cLLI => {
-        if let Ok(light_level) = chunk.parse_data_sized::<8, _, _>(|&data| handle_clli(data)) {
-          self.light_level = light_level;
-        }
-      }
-
       ChunkType::cICP => {
         if let Ok(code_points) = chunk.parse_data_sized::<4, _, _>(|&data| handle_cicp(data)) {
           self.code_points = Some(code_points);
+        }
+      }
+
+      ChunkType::cLLI => {
+        if let Ok(light_level) = chunk.parse_data_sized::<8, _, _>(|&data| handle_clli(data)) {
+          self.light_level = light_level;
         }
       }
 

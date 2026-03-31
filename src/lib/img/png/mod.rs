@@ -16,10 +16,15 @@ pub mod parse {
       pub mod set_data;
     }
     pub mod png_state;
+    pub mod read_idat;
     pub mod read_ihdr;
     pub mod read_post_ihdr;
     pub mod read_signature;
   }
+  pub mod values {
+    pub mod png_int;
+  }
+
   pub mod png_parser;
 }
 

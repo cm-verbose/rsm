@@ -11,7 +11,7 @@ use crate::lib::img::png::parse::chunks::{
 #[derive(Default, Debug)]
 pub struct PNGMetadata {
   pub animation_control: Option<AnimationControl>,
-  pub attribution_manifest: Option<Vec<AttributionManifest>>,
+  pub attribution_manifests: Option<Vec<AttributionManifest>>,
   pub background_bytes: Option<Vec<u8>>,
   pub code_points: Option<CodePoints>,
   pub frames: Option<Vec<FCTLFrame>>,
@@ -19,9 +19,9 @@ pub struct PNGMetadata {
   pub chromaticities: Option<Chromaticities>,
   pub color_volume: Option<ColorVolume>,
   pub histogram: Option<Vec<u16>>,
+  pub icc_profile: Option<ICCProfile>,
   pub light_level: Option<ContentLightLevel>,
   pub modification_time: Option<ModificationTime>,
-  pub icc_profile: Option<ICCProfile>,
   pub palette: Option<Vec<[u8; 3]>>,
   pub physical_dimensions: Option<PhysicalDimensions>,
   pub rendering_intent: Option<RenderingIntent>,

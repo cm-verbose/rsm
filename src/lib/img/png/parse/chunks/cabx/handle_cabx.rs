@@ -5,7 +5,7 @@ use crate::lib::{
 use c2pa::Reader;
 use std::io::Cursor;
 
-/// Handle caBX (Content Credentials) chunk
+/// Handle `caBX` (Content Credentials) chunk
 pub(in super::super::super) fn handle_cabx(
   data: &[u8],
 ) -> Result<Option<Vec<AttributionManifest>>, RSMError> {

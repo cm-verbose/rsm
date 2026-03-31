@@ -1,5 +1,6 @@
 use crate::lib::{
-  img::png::parse::chunks::mdcv::png_color_volume::ColorVolume, util::err::rsm_error::RSMError,
+  img::png::parse::{chunks::mdcv::png_color_volume::ColorVolume, values::png_int::PNGInt},
+  util::err::rsm_error::RSMError,
 };
 
 /// Handle `mDCV` (Mastering display color volume) chunk.
@@ -17,9 +18,9 @@ pub(crate) fn handle_mdcv(data: [u8; 24]) -> Result<ColorVolume, RSMError> {
     *v = (x, y);
   }
 
-  let white_point: u32 = u32::from_be_bytes(data[12..16].try_into().unwrap()) / 20_000;
-  let max_luminance: u32 = u32::from_be_bytes(data[16..20].try_into().unwrap()) / 10_000;
-  let min_luminance: u32 = u32::from_be_bytes(data[20..24].try_into().unwrap()) / 10_000;
+  let white_point: u32 = *PNGInt::try_from(&data[12..16])? / 20_000;
+  let max_luminance: u32 = *PNGInt::try_from(&data[16..20])? / 10_000;
+  let min_luminance: u32 = *PNGInt::try_from(&data[20..24])? / 10_000;
 
   Ok(ColorVolume {
     chromacities,

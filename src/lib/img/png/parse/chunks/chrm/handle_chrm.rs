@@ -1,8 +1,9 @@
 use crate::lib::{
-  img::png::parse::chunks::chrm::png_chromaticities::Chromaticities, util::err::rsm_error::RSMError,
+  img::png::parse::{chunks::chrm::png_chromaticities::Chromaticities, values::png_int::PNGInt},
+  util::err::rsm_error::RSMError,
 };
 
-/// Handle chrm (cHRM) primary chromaticities and white point chunk
+/// Handle `cHRM` (primary chromaticities and white point) chunk
 pub(crate) fn handle_chrm(data: [u8; 32]) -> Result<Option<Chromaticities>, RSMError> {
   let mut chromacities_values: [(f32, f32); 4] = [(0.0, 0.0); 4];
 
@@ -12,13 +13,10 @@ pub(crate) fn handle_chrm(data: [u8; 32]) -> Result<Option<Chromaticities>, RSME
     let cx: &[u8] = &data[s_o..(s_o + 4)];
     let cy: &[u8] = &data[(s_o + 4)..(s_o + 8)];
 
-    let x: u32 = u32::from_be_bytes(cx.try_into().unwrap());
-    let y: u32 = u32::from_be_bytes(cy.try_into().unwrap());
+    let x: PNGInt = cx.try_into()?;
+    let y: PNGInt = cy.try_into()?;
 
-    if x > (i32::MAX as u32) || y > (i32::MAX as u32) {
-      return Ok(None);
-    }
-    *chromacity = ((x as f32) / 100000.0, (y as f32) / 100000.0)
+    *chromacity = (*x as f32 / 100000.0, *y as f32 / 100000.0)
   }
 
   let chromacities: Chromaticities = Chromaticities {

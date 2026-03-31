@@ -1,6 +1,9 @@
-use crate::lib::img::png::parse::chunks::ihdr::{
-  png_bit_depth::BitDepth, png_color_type::ColorType, png_compression_method::CompressionMethod,
-  png_filter_method::FilterMethod, png_interlace_method::InterlaceMethod,
+use crate::lib::img::png::parse::{
+  chunks::ihdr::{
+    png_bit_depth::BitDepth, png_color_type::ColorType, png_compression_method::CompressionMethod,
+    png_filter_method::FilterMethod, png_interlace_method::InterlaceMethod,
+  },
+  values::png_int::PNGInt,
 };
 
 /// PNG Image header representation
@@ -8,10 +11,10 @@ use crate::lib::img::png::parse::chunks::ihdr::{
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct PNGHeader {
   /// Width of the image in pixels
-  pub width: u32,
+  pub width: PNGInt,
 
   /// Height of the image in pixels
-  pub height: u32,
+  pub height: PNGInt,
 
   /// [Bit depth](BitDepth) of the image
   pub bit_depth: BitDepth,

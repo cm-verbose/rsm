@@ -2,7 +2,7 @@ use crate::lib::{
   img::png::parse::chunks::cicp::png_code_points::CodePoints, util::err::rsm_error::RSMError,
 };
 
-/// Handle cICP (Coding-independent code points for video signal type
+/// Handle `cICP` (Coding-independent code points for video signal type
 /// identification) chunk
 pub(in super::super::super) fn handle_cicp(data: [u8; 4]) -> Result<CodePoints, RSMError> {
   Ok(CodePoints {
