@@ -18,6 +18,7 @@ pub mod parse {
     pub mod png_state;
     pub mod read_idat;
     pub mod read_ihdr;
+    pub mod read_post_idat;
     pub mod read_post_ihdr;
     pub mod read_signature;
   }

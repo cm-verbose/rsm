@@ -1,6 +1,5 @@
-use std::ops::Range;
-
 use crate::lib::util::err::rsm_error::RSMError;
+use std::ops::Range;
 
 pub(crate) fn get_bytes(range: Range<usize>, data: &[u8]) -> Result<&[u8], RSMError> {
   let Some(bytes) = data.get(range) else {

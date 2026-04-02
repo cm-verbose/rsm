@@ -4,9 +4,15 @@ use crate::lib::{
   img::png::{
     chunk::{png_chunk::Chunk, png_chunk_type::ChunkType},
     parse::{
-      chunks::ihdr::png_header::PNGHeader,
+      chunks::{
+        idat::{handle_idat::handle_idat, png_pixel_data::PixelData},
+        ihdr::png_header::PNGHeader,
+      },
       png_parser::PNGParser,
-      states::png_state::{ReadIDAT, ReadPostIDAT},
+      states::{
+        data::png_metadata::PNGMetadata,
+        png_state::{ReadIDAT, ReadPostIDAT},
+      },
     },
   },
   util::err::rsm_error::RSMError,
@@ -16,8 +22,9 @@ impl<'p> PNGParser<'p, ReadIDAT> {
   pub(crate) fn read_idat(
     mut self,
     first: &Chunk<'_>,
-    _header: &PNGHeader,
-  ) -> Result<PNGParser<'p, ReadPostIDAT>, RSMError> {
+    header: &PNGHeader,
+    meta: &mut PNGMetadata,
+  ) -> Result<(PNGParser<'p, ReadPostIDAT>, PixelData), RSMError> {
     let mut idat_bytes: Vec<u8> = Vec::new();
     idat_bytes.extend_from_slice(first.data);
 
@@ -31,10 +38,16 @@ impl<'p> PNGParser<'p, ReadIDAT> {
         ChunkType::PLTE => return Err(RSMError::InvalidContent),
 
         _ => {
-          return Ok(PNGParser {
-            reader: self.reader,
-            _state: PhantomData,
-          });
+          let pixel_data: PixelData = handle_idat(&idat_bytes, header, meta)?;
+          meta.set_data(chunk, header)?;
+
+          return Ok((
+            PNGParser {
+              reader: self.reader,
+              _state: PhantomData,
+            },
+            pixel_data,
+          ));
         }
       }
     }

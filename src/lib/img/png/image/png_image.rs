@@ -1,5 +1,6 @@
 use crate::lib::img::png::parse::{
-  chunks::ihdr::png_header::PNGHeader, states::data::png_metadata::PNGMetadata,
+  chunks::{idat::png_pixel_data::PixelData, ihdr::png_header::PNGHeader},
+  states::data::png_metadata::PNGMetadata,
 };
 
 /// Represents a [PNG](https://w3c.github.io/png) image.
@@ -7,4 +8,5 @@ use crate::lib::img::png::parse::{
 pub struct PNGImage {
   pub header: PNGHeader,
   pub meta: PNGMetadata,
+  pub data: PixelData,
 }

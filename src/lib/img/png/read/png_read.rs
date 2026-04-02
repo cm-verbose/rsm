@@ -26,12 +26,14 @@ impl PNGImage {
     let parser = PNGParser::new(data);
     let parser = parser.read_signature()?;
     let (parser, header) = parser.read_ihdr()?;
-    let (parser, post_ihdr, first_idat) = parser.read_post_ihdr(&header)?;
-    let _parser = parser.read_idat(&first_idat, &header)?;
+    let (parser, mut post_ihdr, first_idat) = parser.read_post_ihdr(&header)?;
+    let (parser, data) = parser.read_idat(&first_idat, &header, &mut post_ihdr)?;
+    let _ = parser.read_post_idat(&mut post_ihdr, &header);
 
     Ok(Self {
       header,
       meta: post_ihdr,
+      data,
     })
   }
 }

@@ -1,9 +1,10 @@
+use core::fmt;
 use std::ops::Deref;
 
 use crate::lib::util::err::rsm_error::RSMError;
 
 /// PNG 4 bytes unsigned integer
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub struct PNGInt(pub u32);
 
 impl TryFrom<[u8; 4]> for PNGInt {
@@ -16,6 +17,12 @@ impl TryFrom<[u8; 4]> for PNGInt {
     } else {
       Ok(Self(num))
     }
+  }
+}
+
+impl fmt::Debug for PNGInt {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    f.write_str(&self.0.to_string())
   }
 }
 

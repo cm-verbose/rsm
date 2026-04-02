@@ -11,6 +11,7 @@ impl<'r> PNGReader<'r> {
   pub fn new(bytes: &'r [u8]) -> Self {
     Self { bytes, ptr: 0 }
   }
+
   /// Take ***n*** bytes from the reader's current position
   pub fn take(&mut self, n: usize) -> Result<&'r [u8], RSMError> {
     let end: usize = self.ptr.checked_add(n).ok_or(RSMError::NotEnoughContent)?;
