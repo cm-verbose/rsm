@@ -1,6 +1,8 @@
-use std::{env, path::{Path, PathBuf}};
-
 use rsm::lib::img::png::image::png_image::PNGImage;
+use std::{
+  env,
+  path::{Path, PathBuf},
+};
 
 #[test]
 fn test_read() {
