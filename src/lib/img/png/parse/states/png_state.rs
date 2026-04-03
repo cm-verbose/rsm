@@ -2,7 +2,7 @@ mod private {
   pub trait Sealed {}
 }
 
-/// State for the parser which state is sealed using [`private::Sealed`].
+/// State for the parser which state is sealed.
 pub trait PNGState: private::Sealed {}
 
 macro_rules! define_png_state {

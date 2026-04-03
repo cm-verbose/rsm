@@ -4,7 +4,7 @@ use crate::lib::{
 use exif::{Exif, Reader};
 use std::io::Cursor;
 
-/// Handle the `eXIf` chunk
+/// Handle the `eXIf` (Exchangeable image file profile) chunk
 pub(crate) fn handle_exif(data: &[u8]) -> Result<PNGExifData, RSMError> {
   let mut cursor: Cursor<&[u8]> = Cursor::new(data);
 

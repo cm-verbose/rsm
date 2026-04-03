@@ -7,7 +7,7 @@ use crate::lib::{
   util::err::rsm_error::RSMError,
 };
 
-/// Handle zTXt (Compressed textual data) chunk
+/// Handle `zTXt` (Compressed textual data) chunk
 pub(in super::super) fn handle_ztxt(data: &[u8]) -> Result<Text, RSMError> {
   let mut parts = data.splitn(2, |&n| n == 0);
 

@@ -111,6 +111,7 @@ pub mod text {
   pub mod png_text;
 }
 
+/// `tRNS` - Transparency chunk
 pub mod handle_trns;
 
 /// `zTXt` - Compressed textual data chunk
