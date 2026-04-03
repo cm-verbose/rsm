@@ -7,9 +7,9 @@ impl PNGImage {
   /// Read a file as a PNG image from a value that can be interpreted as a
   /// [FileData] using [TryInto].
   #[inline]
-  pub fn read<T>(data: T) -> Result<Self, RSMError>
+  pub fn read<'a, T>(data: T) -> Result<Self, RSMError>
   where
-    T: TryInto<FileData<'static>>,
+    T: TryInto<FileData<'a>>,
     T::Error: Into<RSMError>,
   {
     let file_data: FileData<'_> = data.try_into().map_err(Into::into)?;
