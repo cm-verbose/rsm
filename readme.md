@@ -4,7 +4,9 @@
 
 ## Testing
 
-- Run tests with `cargo test`
-- Run mutation testing with `cargo mutants`
-- Run fuzzing with `cargo +nightly fuzz run <fuzz_target>`
-- Inspect coverage with `cargo +nightly llvm-cov --html --branch --show-instantiations`
+| Type              | Command                                                         |
+| ----------------- | --------------------------------------------------------------- |
+| Coverage          | `cargo +nightly llvm-cov --html --branch --show-instantiations` |
+| Fuzzing           | `cargo +nightly fuzz run <fuzz_target>`                         |
+| Unit, Integration | `cargo test`                                                    |
+| Mutation          | `cargo mutants`                                                 |

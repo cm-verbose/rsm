@@ -1,5 +1,5 @@
-**/target
-/mutants.out*
+target/
+mutants.out*/
 *.DS_Store
 *.zsh
 profile.json.gz
