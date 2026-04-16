@@ -1,6 +1,6 @@
 # rsm
 
-**rsm** stands for "ressource manager" and is used to read and manipulate data in certain types of files.
+**rsm** (resource manager) is a crate dedicated to handling data in multiple file formats.
 
 ## Testing
 

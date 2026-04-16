@@ -4,17 +4,17 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-c2pa = "0.79.5"
-crc32fast = "1.5.0"
-kamadak-exif = "0.6.1"
-libdeflater = "1.24.0"
-memmap2 = "0.9.8"
-page_size = "0.6.0"
-paste = "1.0.15"
-strum = "0.28"
-strum_macros = "0.28"
+# c2pa = "0.79.5"
+# crc32fast = "1.5.0"
+# kamadak-exif = "0.6.1"
+# libdeflater = "1.24.0"
+# memmap2 = "0.9.8"
+# page_size = "0.6.0"
+# paste = "1.0.15"
+# strum = "0.28"
+# strum_macros = "0.28"
 
 [dev-dependencies]
-criterion = { version = "0.8.2", features = ["html_reports"] }
-proptest = "1.4"
-tempfile = "3.10"
+# criterion = { version = "0.8.2", features = ["html_reports"] }
+# proptest = "1.4"
+# tempfile = "3.10"
