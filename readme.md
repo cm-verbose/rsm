@@ -1,6 +1,8 @@
 # rsm
 
-**rsm** (resource manager) is a crate dedicated to handling data in multiple file formats.
+![Status](https://img.shields.io/github/actions/workflow/status/cm-verbose/rsm/rust.yml?branch=main&style=for-the-badge)
+
+**rsm** (resource manager) is a crate dedicated to handling data in multiple file formats. This library allows you to work with these files with simple functions.
 
 ## Testing
 
