@@ -35,4 +35,10 @@
 )]
 
 /// Library
-pub mod lib {}
+pub mod lib {
+  /// Image formats
+  pub mod img;
+
+  /// Utility modules
+  pub mod util;
+}
