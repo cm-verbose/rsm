@@ -5,7 +5,7 @@ use memmap2::Mmap;
 use std::{
   borrow::Cow,
   fs::{self, File},
-  path::Path,
+  path::{Path, PathBuf},
 };
 
 /// A utility to represent file data.
@@ -44,5 +44,21 @@ impl FileData {
       Self::Native(bytes) => bytes,
       Self::Mmap(map) => map,
     }
+  }
+}
+
+impl TryFrom<PathBuf> for FileData {
+  type Error = RSMError;
+
+  fn try_from(buffer: PathBuf) -> Result<Self, Self::Error> {
+    Self::new(buffer)
+  }
+}
+
+impl TryFrom<&Path> for FileData {
+  type Error = RSMError;
+
+  fn try_from(path: &Path) -> Result<Self, Self::Error> {
+    Self::new(path)
   }
 }

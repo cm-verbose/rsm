@@ -5,17 +5,17 @@ use crate::lib::{
 
 impl PNGImage {
   /// Load a PNG image from a given path.
-  pub fn load<T>(&self, path: T) -> Result<(), RSMError>
+  pub fn load<T>(path: T) -> Result<(), RSMError>
   where
     T: TryInto<FileData>,
     T::Error: Into<RSMError>,
   {
     let file_data: FileData = path.try_into().map_err(Into::into)?;
-    self.load_bytes(file_data.get_bytes())
+    Self::load_bytes(file_data.get_bytes())
   }
 
   /// Load a PNG image from a given sequence of contiguous bytes.
-  pub fn load_bytes(&self, _bytes: &[u8]) -> Result<(), RSMError> {
+  pub fn load_bytes(_bytes: &[u8]) -> Result<(), RSMError> {
     Ok(())
   }
 }

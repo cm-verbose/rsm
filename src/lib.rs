@@ -1,6 +1,7 @@
 //! # rsm
 //!
-//! ![Status](https://img.shields.io/github/actions/workflow/status/cm-verbose/rsm/rust.yml?branch=main&style=for-the-badge)
+//! [![Status](https://img.shields.io/github/actions/workflow/status/cm-verbose/rsm/rust.yml?branch=main&style=for-the-badge)
+//! ](https://github.com/cm-verbose/rsm/actions/workflows/rust.yml)
 //!
 //! **rsm** (resource manager) is a crate dedicated to handling data in
 //! multiple file formats. This library allows you to work with these files
@@ -22,7 +23,6 @@
   unsafe_attr_outside_unsafe,
   unused,
   unused_attributes,
-  unused_crate_dependencies,
   unused_doc_comments,
   unused_extern_crates,
   unused_imports,
