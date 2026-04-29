@@ -1,5 +1,5 @@
 use crate::lib::{
-  img::png::img::image::PNGImage,
+  img::png::{img::image::PNGImage, read::reader::reader::PNGReader},
   util::{err::error::RSMError, files::file_data::FileData},
 };
 
@@ -15,7 +15,9 @@ impl PNGImage {
   }
 
   /// Load a PNG image from a given sequence of contiguous bytes.
-  pub fn load_bytes(_bytes: &[u8]) -> Result<(), RSMError> {
+  pub fn load_bytes(bytes: &[u8]) -> Result<(), RSMError> {
+    let reader: PNGReader<_> = PNGReader::new();
+    reader.read(bytes)?;
     Ok(())
   }
 }
