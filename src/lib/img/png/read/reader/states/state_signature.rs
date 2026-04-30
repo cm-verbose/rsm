@@ -13,7 +13,9 @@ impl<'d> PNGReader<'d, ReadSignature> {
   const SIGNATURE: u64 = 0x89504E470D0A1A0A;
 
   /// Read and validate the image signature.
-  pub(crate) fn read_signature(&mut self) -> Result<PNGReader<'d, ReadIHDR>, RSMError> {
+  pub(crate) fn read_signature(
+    &mut self,
+  ) -> Result<PNGReader<'d, ReadIHDR>, RSMError> {
     let bytes: &[u8; 8] = self.take_sized::<8>()?;
     if Self::SIGNATURE == u64::from_be_bytes(*bytes) {
       Ok(PNGReader {

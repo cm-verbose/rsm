@@ -37,6 +37,9 @@ pub mod read {
       /// State for reading the image's signature
       pub mod state_signature;
 
+      /// State for reading content following the image's header
+      pub mod state_read_post_ihdr;
+
       /// State for reading the image's header data
       pub mod state_read_ihdr;
     }

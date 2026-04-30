@@ -1,4 +1,4 @@
-/// Represents a PNG chunk
+/// Represents a PNG chunk.
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct Chunk<'c> {
   pub r#type: u32,

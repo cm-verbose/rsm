@@ -1,4 +1,6 @@
-use crate::lib::img::png::read::reader::states::png_state::{PNGState, ReadSignature};
+use crate::lib::img::png::read::reader::states::png_state::{
+  PNGState, ReadSignature,
+};
 use std::marker::PhantomData;
 
 /// PNG parser

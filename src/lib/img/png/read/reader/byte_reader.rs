@@ -26,7 +26,9 @@ impl<'d, S: PNGState> PNGReader<'d, S> {
 
   /// Take a constant N bytes from the reader's current position.
   #[inline]
-  pub(crate) fn take_sized<const N: usize>(&mut self) -> Result<&'d [u8; N], RSMError> {
+  pub(crate) fn take_sized<const N: usize>(
+    &mut self,
+  ) -> Result<&'d [u8; N], RSMError> {
     let sized: &'d [u8; N] = self
       .take(N)?
       .try_into()
@@ -34,7 +36,7 @@ impl<'d, S: PNGState> PNGReader<'d, S> {
     Ok(sized)
   }
 
-  /// Read a chunk
+  /// Read a [chunk](Chunk).
   pub(crate) fn read_chunk(&mut self) -> Result<Chunk<'d>, RSMError> {
     let bytes: &[u8; 8] = self.take_sized::<8>()?;
     let res: u64 = u64::from_be_bytes(*bytes);
@@ -47,16 +49,28 @@ impl<'d, S: PNGState> PNGReader<'d, S> {
     let length: u32 = (res >> 32) as u32;
     let r#type: u32 = res as u32;
 
-    let content_total: u32 = length + 4;
-    let content: &[u8] = self.take(content_total as usize)?;
-
-    let data: &[u8] = unsafe { &content.get_unchecked(..length as usize) };
-    let crc: &[u8] = unsafe { &content.get_unchecked(length as usize..) };
+    let content_total: usize = (length + 4) as usize;
+    let content: &[u8] = self.take(content_total)?;
+    let (data, crc) = unsafe { content.split_at_unchecked(length as usize) };
 
     Ok(Chunk {
       r#type,
       data,
       _crc: crc.try_into().unwrap(),
     })
+  }
+
+  /// Delagates chunk handling to a callback for parsing or other operations.
+  #[inline(always)]
+  pub(crate) fn handle_chunk<F, R>(
+    &mut self,
+    r#type: u32,
+    data: &'d [u8],
+    mut callback: F,
+  ) -> Result<R, RSMError>
+  where
+    F: FnMut(u32, &'d [u8]) -> Result<R, RSMError>,
+  {
+    callback(r#type, data)
   }
 }
