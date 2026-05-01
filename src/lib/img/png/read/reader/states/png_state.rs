@@ -9,7 +9,6 @@ pub trait PNGState: private::Sealed {}
 macro_rules! define_png_state {
   ($(#[$doc: meta])* $state: ident) => {
     $(#[$doc])*
-    #[derive(Clone, Copy)]
     pub(crate) struct $state;
     impl private::Sealed for $state {}
     impl PNGState for $state{}

@@ -7,7 +7,7 @@ use crate::lib::{
 };
 
 impl<'d, S: PNGState> PNGReader<'d, S> {
-  /// Take n bytes from the reader's current position
+  /// Take n bytes from the reader's current position.
   #[inline]
   pub(crate) fn take(&mut self, next: usize) -> Result<&'d [u8], RSMError> {
     let end = self

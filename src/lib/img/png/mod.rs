@@ -13,6 +13,9 @@ pub mod img {
   pub mod image;
 }
 
+/// Parsing operations
+pub mod parse;
+
 /// Read operation on the image
 pub mod read {
   /// Read data from file

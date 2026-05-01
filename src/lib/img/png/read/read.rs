@@ -4,7 +4,7 @@ use crate::lib::{
 };
 
 impl PNGImage {
-  /// Load a PNG image from a given path.
+  /// Load a PNG image from a given [path](AsRef<Path>).
   pub fn load<T>(path: T) -> Result<(), RSMError>
   where
     T: TryInto<FileData>,

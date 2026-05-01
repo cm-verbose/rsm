@@ -10,5 +10,11 @@
 | :---------------- | :-------------------------------------------------------------- |
 | Coverage          | `cargo +nightly llvm-cov --html --branch --show-instantiations` |
 | Fuzzing           | `cargo +nightly fuzz run <fuzz_target>`                         |
-| Unit, Integration | `cargo test -- features <features> -- --no-capture`             |
+| Unit, Integration | `cargo test --F <features> -- --no-capture`                     |
 | Mutation          | `cargo mutants`                                                 |
+
+## Benchmarks
+
+| Type            | Command                     |
+| :-------------- | :-------------------------- |
+| Microbenchmarks | `cargo bench -F <features>` |
