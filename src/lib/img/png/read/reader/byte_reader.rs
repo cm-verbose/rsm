@@ -1,6 +1,6 @@
 use crate::lib::{
   img::png::{
-    chunk::chunk::Chunk,
+    chunk::chunk::_Chunk,
     read::reader::{reader::PNGReader, states::png_state::PNGState},
   },
   util::err::error::RSMError,
@@ -37,7 +37,7 @@ impl<'d, S: PNGState> PNGReader<'d, S> {
   }
 
   /// Read a [chunk](Chunk).
-  pub(crate) fn read_chunk(&mut self) -> Result<Chunk<'d>, RSMError> {
+  pub(crate) fn _read_chunk(&mut self) -> Result<_Chunk<'d>, RSMError> {
     let bytes: &[u8; 8] = self.take_sized::<8>()?;
     let res: u64 = u64::from_be_bytes(*bytes);
 
@@ -53,7 +53,7 @@ impl<'d, S: PNGState> PNGReader<'d, S> {
     let content: &[u8] = self.take(content_total)?;
     let (data, crc) = unsafe { content.split_at_unchecked(length as usize) };
 
-    Ok(Chunk {
+    Ok(_Chunk {
       r#type,
       data,
       _crc: crc.try_into().unwrap(),
@@ -62,7 +62,7 @@ impl<'d, S: PNGState> PNGReader<'d, S> {
 
   /// Delagates chunk handling to a callback for parsing or other operations.
   #[inline(always)]
-  pub(crate) fn handle_chunk<F, R>(
+  pub(crate) fn _handle_chunk<F, R>(
     &mut self,
     r#type: u32,
     data: &'d [u8],

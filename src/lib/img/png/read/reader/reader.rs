@@ -1,6 +1,4 @@
-use crate::lib::img::png::read::reader::states::png_state::{
-  PNGState, ReadSignature,
-};
+use crate::lib::img::png::read::reader::states::png_state::{PNGState, ReadPrelude};
 use std::marker::PhantomData;
 
 /// PNG reader.
@@ -11,7 +9,7 @@ pub(crate) struct PNGReader<'d, S: PNGState> {
   pub ptr: usize,
 }
 
-impl<'d> PNGReader<'d, ReadSignature> {
+impl<'d> PNGReader<'d, ReadPrelude> {
   /// Creates a new reader.
   pub(crate) fn new() -> Self {
     Self {

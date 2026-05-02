@@ -6,6 +6,8 @@
 
 ## Testing
 
+Start these commands with `RUSTFLAGS="-C target-feature=+<feature1>,+<feature_n> -C target-cpu=native"` to target specific features.
+
 | Type              | Command                                                         |
 | :---------------- | :-------------------------------------------------------------- |
 | Coverage          | `cargo +nightly llvm-cov --html --branch --show-instantiations` |

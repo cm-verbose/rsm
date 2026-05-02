@@ -16,16 +16,10 @@ macro_rules! define_png_state {
 }
 
 define_png_state! {
-  /// State where the image signature is read.
-  ReadSignature
+  /// Read image prelude (Signature and fixed IHDR start)
+  ReadPrelude
 }
 
 define_png_state! {
-/// State where image header data is read.
-  ReadIHDR
-}
-
-define_png_state! {
-  /// State to read data following the image header
-  ReadPostIHDR
+  ReadPostPrelude
 }
