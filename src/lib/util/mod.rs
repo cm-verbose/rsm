@@ -8,4 +8,7 @@ pub mod files {
 pub mod err {
   /// RSM-specific error
   pub mod error;
+
+  /// PNG-specific errors
+  pub mod png_error;
 }

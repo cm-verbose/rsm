@@ -26,7 +26,7 @@
   unused_attributes,
   unused_doc_comments,
   unused_extern_crates,
-  // unused_imports,
+  unused_imports,
   unused_import_braces,
   unused_lifetimes,
   clippy::correctness,

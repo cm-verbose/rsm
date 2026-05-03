@@ -1,10 +1,10 @@
 use crate::lib::{
-  img::png::parse::chunks::chunk_data::_ChunkData, util::err::error::RSMError,
+  img::png::parse::chunks::chunk_data::ChunkData, util::err::error::RSMError,
 };
 
 /// IHDR (Image header) content.
 #[derive(Debug)]
-pub(crate) struct _ImageHeader {
+pub(crate) struct ImageHeader {
   _width: u32,
   _height: u32,
   _bit_depth: u8,
@@ -14,7 +14,7 @@ pub(crate) struct _ImageHeader {
   _interlace_method: u8,
 }
 
-impl<'h> _ChunkData<'h> for _ImageHeader {
+impl<'h> ChunkData<'h> for ImageHeader {
   /// Assume data is exactly 13 bytes.
   #[inline(always)]
   fn from_bytes(data: &'h [u8]) -> Result<Self, RSMError> {
@@ -25,7 +25,7 @@ impl<'h> _ChunkData<'h> for _ImageHeader {
     let width: u32 = (size_u64 >> 32) as u32;
     let height: u32 = size_u64 as u32;
 
-    Ok(_ImageHeader {
+    Ok(ImageHeader {
       _width: width,
       _height: height,
       _bit_depth: unsafe { *data.get_unchecked(8) },

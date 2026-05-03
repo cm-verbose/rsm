@@ -1,21 +1,21 @@
-use crate::lib::img::png::read::reader::states::png_state::{PNGState, ReadPrelude};
-use std::marker::PhantomData;
+use crate::lib::img::png::read::reader::neon::states::states::{
+  PNGState, ReadPrelude,
+};
+use std::{marker::PhantomData, ptr};
 
-/// PNG reader.
-#[derive(Clone)]
+/// Neon implementation of the reader.
 pub(crate) struct PNGReader<'d, S: PNGState> {
   pub _state: PhantomData<S>,
   pub data: &'d [u8],
-  pub ptr: usize,
+  pub ptr: *const u8,
 }
 
 impl<'d> PNGReader<'d, ReadPrelude> {
-  /// Creates a new reader.
   pub(crate) fn new() -> Self {
     Self {
       _state: PhantomData,
       data: &[],
-      ptr: 0,
+      ptr: ptr::null(),
     }
   }
 }

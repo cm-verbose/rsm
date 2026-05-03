@@ -1,5 +1,5 @@
 use crate::lib::{
-  img::png::{img::image::PNGImage, read::reader::reader::PNGReader},
+  img::png::img::image::PNGImage,
   util::{err::error::RSMError, files::file_data::FileData},
 };
 
@@ -16,8 +16,11 @@ impl PNGImage {
 
   /// Load a PNG image from a given sequence of contiguous bytes.
   pub fn load_bytes(bytes: &[u8]) -> Result<(), RSMError> {
-    let reader: PNGReader<_> = PNGReader::new();
-    reader.read(bytes)?;
-    Ok(())
+    #[cfg(target_feature = "neon")]
+    {
+      use crate::lib::img::png::read::reader::neon::reader::PNGReader;
+      let reader: PNGReader<'_, _> = PNGReader::new();
+      reader.read(bytes)
+    }
   }
 }

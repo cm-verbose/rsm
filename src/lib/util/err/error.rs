@@ -1,3 +1,4 @@
+use crate::lib::util::err::png_error::PNGError;
 use std::{
   error::Error,
   fmt::{Display, Formatter, Result},
@@ -7,6 +8,9 @@ use std::{
 /// An error occuring in [rsm](crate) by operations that process data.
 #[derive(Debug)]
 pub enum RSMError {
+  /// PNG-specific errors.
+  PNGError(PNGError),
+
   /// A default error used to cover undefined errors or non-[crate]-specific
   /// errors that may occur within the program.
   Other(String),
@@ -14,10 +18,10 @@ pub enum RSMError {
 
 impl Display for RSMError {
   fn fmt(&self, fmt: &mut Formatter<'_>) -> Result {
-    let data: &str = match self {
-      Self::Other(message) => message,
-    };
-    fmt.write_str(data)
+    match self {
+      Self::PNGError(err) => err.fmt(fmt),
+      Self::Other(message) => fmt.write_str(message),
+    }
   }
 }
 

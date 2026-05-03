@@ -1,11 +1,9 @@
 mod private {
-  pub trait Sealed {}
+  pub(crate) trait Sealed {}
 }
 
-/// A possible state for the PNG reader state.
-pub trait PNGState: private::Sealed {}
+pub(crate) trait PNGState: private::Sealed {}
 
-/// Defines a given state for the PNG reader state machine.
 macro_rules! define_png_state {
   ($(#[$doc: meta])* $state: ident) => {
     $(#[$doc])*
@@ -16,10 +14,9 @@ macro_rules! define_png_state {
 }
 
 define_png_state! {
-  /// Read image prelude (Signature and fixed IHDR start)
   ReadPrelude
 }
 
 define_png_state! {
-  ReadPostPrelude
+  ReadHeaderData
 }
