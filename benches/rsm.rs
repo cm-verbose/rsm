@@ -1,12 +1,14 @@
 #![cfg(feature = "png")]
 use criterion::{self, Criterion, criterion_group, criterion_main};
-use rsm::lib::img::png::img::image::PNGImage;
+use rsm::lib::img::png::img::img::PNGImage;
 use std::{hint::black_box, path::Path};
 
 fn bench_png(c: &mut Criterion) {
   let mut group = c.benchmark_group("PNG");
   let base = env!("CARGO_MANIFEST_DIR");
   let suite_path = Path::new(base).join("tests/png/png_suite");
+
+  group.sample_size(100);
 
   let test_cases: Vec<(String, Vec<u8>)> = std::fs::read_dir(suite_path)
     .unwrap()
@@ -24,7 +26,10 @@ fn bench_png(c: &mut Criterion) {
       continue;
     }
     group.bench_with_input(name, data, |b, input| {
-      b.iter(|| PNGImage::load_bytes(black_box(input)).unwrap());
+      b.iter(|| {
+        let img = PNGImage::load_bytes(black_box(input)).unwrap();
+        black_box(img)
+      })
     });
   }
 

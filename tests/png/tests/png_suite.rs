@@ -1,5 +1,6 @@
 #![cfg(feature = "png")]
-use rsm::lib::img::png::img::image::PNGImage;
+
+use rsm::lib::img::png::img::img::PNGImage;
 use std::path::Path;
 
 #[test]

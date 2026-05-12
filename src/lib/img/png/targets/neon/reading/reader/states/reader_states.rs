@@ -20,3 +20,7 @@ define_png_state! {
 define_png_state! {
   ReadHeaderData
 }
+
+define_png_state! {
+  ReadPostIHDR
+}
